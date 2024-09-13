@@ -10,7 +10,6 @@
 
 #include <time.h>
 
-
 #define treshhold 90
 
 int count = 1;
@@ -55,90 +54,118 @@ void greyScale(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], u
 // New Grey Scale function:
 void greyScale(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char grey_scale_image[BMP_WIDTH][BMP_HEIGTH])
 {
-    for (int x = 0; x < BMP_WIDTH; x++)
+  for (int x = 0; x < BMP_WIDTH; x++)
+  {
+    for (int y = 0; y < BMP_HEIGTH; y++)
     {
-        for (int y = 0; y < BMP_HEIGTH; y++)
-        {
-            grey_scale_image[x][y] = (input_image[x][y][0] + input_image[x][y][1] + input_image[x][y][2] + 1) / 3;
-        }
+      grey_scale_image[x][y] = (input_image[x][y][0] + input_image[x][y][1] + input_image[x][y][2] + 1) / 3;
     }
+  }
 }
 
 void blackAndWhite(unsigned char grey_scale_image[BMP_WIDTH][BMP_HEIGTH], unsigned char black_white_image[BMP_WIDTH][BMP_HEIGTH])
 {
-    for (int x = 0; x < BMP_WIDTH; x++)
+  for (int x = 0; x < BMP_WIDTH; x++)
+  {
+    for (int y = 0; y < BMP_HEIGTH; y++)
     {
-        for (int y = 0; y < BMP_HEIGTH; y++)
-        {
-            black_white_image[x][y] = (grey_scale_image[x][y] >= treshhold) ? 255 : 0;
-        }
+      black_white_image[x][y] = (grey_scale_image[x][y] >= treshhold) ? 255 : 0;
     }
+  }
 }
 
 // Function to check if a pixel and its surrounding pixels are white
 int checkSurroundingPixels(int x, int y, unsigned char image[BMP_WIDTH][BMP_HEIGTH])
 {
-    //Moduler!
-    int offsets[4][2] = {
-        {-1, 0},  // Left
-        {1, 0},   // Right
-        {0, -1},  // Up
-        {0, 1}    // Down
-    };
+  // Moduler!
+  int offsets[4][2] = {
+      {-1, 0}, // Left
+      {1, 0},  // Right
+      {0, -1}, // Up
+      {0, 1}   // Down
+  };
 
-    for (int i = 0; i < sizeof(offsets)/sizeof(offsets[0]) ; i++) {
+  for (int i = 0; i < sizeof(offsets) / sizeof(offsets[0]); i++)
+  {
 
-        int new_x = x + offsets[i][0];
-        int new_y = y + offsets[i][1];
+    int new_x = x + offsets[i][0];
+    int new_y = y + offsets[i][1];
 
-        // Check if surounding pixels is in bound:
-        if (new_x >= 0 && new_x < BMP_WIDTH && new_y >= 0 && new_y < BMP_HEIGTH) {
-            if (image[new_x][new_y] != 255) {
-                return 0;
-            }
-        }
-        else 
-        {
-            //Might need an edge case handling here...:
-            return 0;
-        }
+    // Check if surounding pixels is in bound:
+    if (new_x >= 0 && new_x < BMP_WIDTH && new_y >= 0 && new_y < BMP_HEIGTH)
+    {
+      if (image[new_x][new_y] != 255)
+      {
+        return 0;
+      }
     }
-    return 1;
+    else
+    {
+      // Might need an edge case handling here...:
+      return 0;
+    }
+  }
+  return 1;
 }
 
 int erodeImage(unsigned char black_white_image[BMP_WIDTH][BMP_HEIGTH], unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH])
 {
-    int eroded = 0;
-    unsigned char temp_image[BMP_WIDTH][BMP_HEIGTH];
-    
-    // Copy image to temp:
-    for (int x = 0; x < BMP_WIDTH; x++)
-    {
-        for (int y = 0; y < BMP_HEIGTH; y++)
-        {
-            temp_image[x][y] = black_white_image[x][y];
-        }
-    }
+  int eroded = 0;
+  unsigned char temp_image[BMP_WIDTH][BMP_HEIGTH];
 
-    for (int x = 0; x < BMP_WIDTH; x++)
+  // Copy image to temp:
+  for (int x = 0; x < BMP_WIDTH; x++)
+  {
+    for (int y = 0; y < BMP_HEIGTH; y++)
     {
-        for (int y = 0; y < BMP_HEIGTH; y++)
-        {
-          if (temp_image[x][y] != 255) {
-            black_white_image[x][y] = 0;
-            continue;
-          }
-          if (!checkSurroundingPixels(x, y, temp_image))  
-          {
-              black_white_image[x][y] = 0;
-              eroded = 1; 
-          }
-        }
+      temp_image[x][y] = black_white_image[x][y];
     }
-    eroded_image = black_white_image;
-    printf("Eroded has run %d times\n", count++);
-    return eroded;
-    
+  }
+
+  for (int x = 0; x < BMP_WIDTH; x++)
+  {
+    for (int y = 0; y < BMP_HEIGTH; y++)
+    {
+      if (temp_image[x][y] != 255)
+      {
+        black_white_image[x][y] = 0;
+        continue;
+      }
+      if (!checkSurroundingPixels(x, y, temp_image))
+      {
+        black_white_image[x][y] = 0;
+        eroded = 1;
+      }
+    }
+  }
+  eroded_image = black_white_image;
+  printf("Eroded has run %d times\n", count++);
+  return eroded;
+}
+
+void extract_window(unsigned char image[BMP_WIDTH][BMP_HEIGTH], int centerX, int centerY, int window[13][13])
+{
+  int radius = 6;
+
+  for (int i = -radius; i <= radius; i++)
+  {
+    for (int j = -radius; j <= radius; j++)
+    {
+      // Compute the coordinates in the original image
+      int x = centerX + i;
+      int y = centerY + j;
+
+      // Check if the coordinates are within the bounds of the image
+      if (x >= 0 && x < BMP_WIDTH && y >= 0 && y < BMP_HEIGTH)
+      {
+        window[i + radius][j + radius] = image[x][y] == 0 ? 0 : 1; // Copy pixel to window
+      }
+      else
+      {
+        window[i + radius][j + radius] = 2; // Use a sentinel value if out of bounds
+      }
+    }
+  }
 }
 
 // Debugging
@@ -147,13 +174,13 @@ void convertTo3D(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned char
 {
   for (int x = 0; x < BMP_WIDTH; x++)
   {
-      for (int y = 0; y < BMP_HEIGTH; y++)
-      {
-          unsigned char pixel_value = input_image[x][y];
-          output_image[x][y][0] = pixel_value; 
-          output_image[x][y][1] = pixel_value;
-          output_image[x][y][2] = pixel_value;  
-      }
+    for (int y = 0; y < BMP_HEIGTH; y++)
+    {
+      unsigned char pixel_value = input_image[x][y];
+      output_image[x][y][0] = pixel_value;
+      output_image[x][y][1] = pixel_value;
+      output_image[x][y][2] = pixel_value;
+    }
   }
 }
 
@@ -193,24 +220,28 @@ int main(int argc, char **argv)
     erodeImage(modified_image, modified_image);
   }
   */
-  
+  int size = 13;
+  int window[size][size];
+  extract_window(modified_image, 0, 0, window);
+  for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size; j++) {
+          printf("%d ", window[i][j]);
+      }
+      printf("\n");
+  }
 
+  // while (erodeImage(modified_image, modified_image));
 
-  while(erodeImage(modified_image, modified_image));
+      // Debugging
+      // Convert grayscale 2D image to 3D RGB format
 
-
-
-  
-  // Debugging
-  // Convert grayscale 2D image to 3D RGB format
   convertTo3D(modified_image, output_image);
 
   // Save image to file
   write_bitmap(output_image, argv[2]);
 
   printf("Done!\n");
-  
-  
+
   end = clock();
   double time_spent = (double)(end - start) / CLOCKS_PER_SEC;
   printf("Time taken: %f seconds\n", time_spent);
