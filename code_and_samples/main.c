@@ -406,64 +406,64 @@ void draw_x(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsi
 }
 
 // Main function
-int main(int argc, char **argv)
-{
-  clock_t start, end;
-  start = clock();
+// int main(int argc, char **argv)
+// {
+//   clock_t start, end;
+//   start = clock();
 
-  // argc counts how may arguments are passed
-  // argv[0] is a string with the name of the program
-  // argv[1] is the first command line argument (input image)
-  // argv[2] is the second command line argument (output image)
+//   // argc counts how may arguments are passed
+//   // argv[0] is a string with the name of the program
+//   // argv[1] is the first command line argument (input image)
+//   // argv[2] is the second command line argument (output image)
 
-  // Checking that 2 arguments are passed
-  if (argc != 3)
-  {
-    fprintf(stderr, "Usage: %s <output file path> <output file path>\n", argv[0]);
-    exit(1);
-  }
+//   // Checking that 2 arguments are passed
+//   if (argc != 3)
+//   {
+//     fprintf(stderr, "Usage: %s <output file path> <output file path>\n", argv[0]);
+//     exit(1);
+//   }
 
-  printf("Example program - 02132 - A1\n");
+//   printf("Example program - 02132 - A1\n");
 
-  // Load image from file
-  read_bitmap(argv[1], input_image);
+//   // Load image from file
+//   read_bitmap(argv[1], input_image);
 
-  greyScale(input_image, modified_image);
-  blackAndWhite(modified_image, modified_image);
+//   greyScale(input_image, modified_image);
+//   blackAndWhite(modified_image, modified_image);
 
-  /*
-  for (int i = 0; i < 26; i++) {
-    erodeImage(modified_image, modified_image);
-  }
-  */
-  //distance(modified_image, modified_image);
+//   /*
+//   for (int i = 0; i < 26; i++) {
+//     erodeImage(modified_image, modified_image);
+//   }
+//   */
+//   //distance(modified_image, modified_image);
 
-  while (erodeImage(modified_image, eroded_image));
+//   while (erodeImage(modified_image, eroded_image));
 
-  /*for (int i = 0; i < size; i++) {
-      for (int j = 0; j < size; j++) {
-          printf("%d ", window[i][j]);
-      }
-      printf("\n");
-  }*/
+//   /*for (int i = 0; i < size; i++) {
+//       for (int j = 0; j < size; j++) {
+//           printf("%d ", window[i][j]);
+//       }
+//       printf("\n");
+//   }*/
 
-  // Debugging
-  // Convert grayscale 2D image to 3D RGB format
+//   // Debugging
+//   // Convert grayscale 2D image to 3D RGB format
 
-  //convertTo3D(modified_image, output_image);
+//   //convertTo3D(modified_image, output_image);
 
-  // Save image to file
-  printf("We found %d dots!\n", coordinates_count);
-  printf("Done!\n");
+//   // Save image to file
+//   printf("We found %d dots!\n", coordinates_count);
+//   printf("Done!\n");
 
-  draw_x(input_image, output_image);
+//   draw_x(input_image, output_image);
 
-  write_bitmap(output_image, argv[2]);
+//   write_bitmap(output_image, argv[2]);
 
-  free(coordinates);
-  end = clock();
-  double time_spent = (double)(end - start) / CLOCKS_PER_SEC;
-  printf("Time taken: %f seconds\n", time_spent);
+//   free(coordinates);
+//   end = clock();
+//   double time_spent = (double)(end - start) / CLOCKS_PER_SEC;
+//   printf("Time taken: %f seconds\n", time_spent);
 
-  return 0;
-}
+//   return 0;
+// }
