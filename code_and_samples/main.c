@@ -26,6 +26,8 @@ typedef struct
 
 Coordinate *coordinates = NULL;
 
+int temp[13][13];
+
 void addCoordinate(int x, int y)
 {
   coordinates_count++;
@@ -202,7 +204,10 @@ void extract_window(unsigned char image[BMP_WIDTH][BMP_HEIGTH], int centerX, int
   int radius = 6;
   for (int i = -radius; i <= radius; i++)
   {
-    if (getPixelValue(image, centerX - radius, centerY + i) || getPixelValue(image, centerX + radius, centerY + i) || getPixelValue(image, centerX + i, centerY - radius) || getPixelValue(image, centerX + i, centerY + radius))
+    if (getPixelValue(image, centerX - radius, centerY + i) ||
+        getPixelValue(image, centerX + radius, centerY + i) ||
+        getPixelValue(image, centerX + i, centerY - radius) ||
+        getPixelValue(image, centerX + i, centerY + radius))
     {
       return;
     }
@@ -224,6 +229,43 @@ void extract_window(unsigned char image[BMP_WIDTH][BMP_HEIGTH], int centerX, int
       }
     }
   }
+}
+
+// Function to create a binary array based on a pixel's surroundings
+int **create_binary_array(unsigned char image[BMP_WIDTH][BMP_HEIGTH], int center_x, int center_y)
+{
+  int width = BMP_WIDTH;
+  int height = BMP_HEIGTH;
+  int radius = 6;
+
+  // Allocate memory for the 2D array
+  int **result = (int **)malloc((2 * radius + 1) * sizeof(int *));
+  for (int i = 0; i < 2 * radius + 1; i++)
+  {
+    result[i] = (int *)malloc((2 * radius + 1) * sizeof(int));
+  }
+
+  // Initialize the result array
+  for (int i = -radius; i <= radius; i++)
+  {
+    for (int j = -radius; j <= radius; j++)
+    {
+      int x = center_x + i;
+      int y = center_y + j;
+
+      // Ensure we stay within image bounds
+      if (x >= 0 && x < width && y >= 0 && y < height)
+      {
+        result[i + radius][j + radius] = (image[x][y] == 255) ? 1 : 0;
+      }
+      else
+      {
+        result[i + radius][j + radius] = 2; // Out of bounds, set to 2
+      }
+    }
+  }
+
+  return result;
 }
 
 int min(int a, int b)
@@ -282,14 +324,94 @@ void distance(unsigned char black_white_image[BMP_WIDTH][BMP_HEIGTH], unsigned c
   }
 }
 
+int valueinarray(int **arr, int size, int val, unsigned char modified_image[BMP_WIDTH][BMP_HEIGTH])
+{
+  // First, check the border (outermost pixels)
+  for (int i = 0; i < size; i++)
+  {
+    if (arr[0][i] == val || arr[size - 1][i] == val || arr[i][0] == val || arr[i][size - 1] == val)
+    {
+      return 0; // Found val in the border, return 0 (cant capture)
+    }
+  }
+
+  int flag = 0;
+  // If no white pixels are found on the border, check the inner square
+  for (int i = 1; i < size - 1; i++)
+  {
+    for (int j = 1; j < size - 1; j++)
+    {
+      if (arr[i][j] == val)
+      {
+        return 1; // Found val in the inner square, return true (1)
+      }
+    }
+  }
+
+  return 0; // No white pixels found, return false (0)
+}
+
+void new_extract_window(int x, int y)
+{
+  int size = 13; // Size of the array
+  int radius = size / 2;
+  // Create binary array for the current pixel:
+  int **binary_array = create_binary_array(modified_image, x, y);
+
+  // Check if a dot should be captured:
+  if (valueinarray(binary_array, size, 1, modified_image) == 1)
+  {
+    addCoordinate(x, y);
+
+    // If a dot is found, make the surrounding area black:
+    for (int i = -radius; i <= radius; i++)
+    {
+      for (int j = -radius; j <= radius; j++)
+      {
+        int new_x = x + i;
+        int new_y = y + j;
+
+        if (new_x >= 0 && new_x < BMP_WIDTH && new_y >= 0 && new_y < BMP_HEIGTH)
+        {
+          modified_image[new_x][new_y] = 0;
+        }
+      }
+    }
+  }
+
+  // Free allocated memory for the binary array:
+  for (int i = 0; i < size; i++)
+  {
+    free(binary_array[i]);
+  }
+  free(binary_array);
+}
 void countDots()
 {
-  for (int i = 0; i < BMP_WIDTH; i++)
+
+  for (int x = 0; x < BMP_WIDTH; x++)
   {
-    for (int j = 0; j < BMP_HEIGTH; j++)
+    for (int y = 0; y < BMP_HEIGTH; y++)
     {
-      extract_window(modified_image, i, j, modified_image);
+
+      //extract_window(modified_image, x, y, modified_image);
+      new_extract_window(x, y);
     }
+  }
+}
+
+// print2(binary_array, size);
+// printf("Value in array: %s\n", valueinarray(binary_array, size, 1) == 1 ? "Chunk to capture" : "Cant capture");
+void print2(int **array, int size)
+{
+  printf("Binary Array:\n");
+  for (int i = 0; i < size; i++)
+  {
+    for (int j = 0; j < size; j++)
+    {
+      printf("%d ", array[i][j]);
+    }
+    printf("\n");
   }
 }
 
@@ -323,12 +445,16 @@ int erodeImage(unsigned char black_white_image[BMP_WIDTH][BMP_HEIGTH], unsigned 
       }
     }
   }
-  for (int i = 0; i < BMP_WIDTH; i++) {
-    for (int j = 0; j < BMP_HEIGTH; j++) {
+  for (int i = 0; i < BMP_WIDTH; i++)
+  {
+    for (int j = 0; j < BMP_HEIGTH; j++)
+    {
       eroded_image[i][j] = black_white_image[i][j];
     }
   }
-  // printf("Eroded has run %d times\n", count++);
+
+  // Making an array
+
   if (eroded)
   {
     countDots();
@@ -422,6 +548,7 @@ int main(int argc, char **argv)
     fprintf(stderr, "Usage: %s <output file path> <output file path>\n", argv[0]);
     exit(1);
   }
+<<<<<<< Updated upstream
 
   printf("Example program - 02132 - A1\n");
 
@@ -465,5 +592,52 @@ int main(int argc, char **argv)
   double time_spent = (double)(end - start) / CLOCKS_PER_SEC;
   printf("Time taken: %f seconds\n", time_spent);
 
+=======
+  printf("Example program - 02132 - A1\n");
+
+  // Load image from file
+  read_bitmap(argv[1], input_image);
+
+  greyScale(input_image, modified_image);
+  blackAndWhite(modified_image, modified_image);
+  /*
+  for (int i = 0; i < 26; i++) {
+    erodeImage(modified_image, modified_image);
+  }
+  */
+  // distance(modified_image, modified_image);
+
+  // Result array (2*radius + 1) x (2*radius + 1)
+  int temp = 0;
+  while (erodeImage(modified_image, eroded_image) && temp < 50)
+  {
+
+    /*for (int i = 0; i < size; i++) {
+         for (int j = 0; j < size; j++) {
+         printf("%d ", window[i][j]);
+        }
+      printf("\n");
+      */
+    temp++;
+  }
+
+  // Debugging
+  // Convert grayscale 2D image to 3D RGB format
+  // convertTo3D(modified_image, output_image);
+
+  // Save image to file
+  printf("We found %d dots!\n", coordinates_count);
+  printf("Done!\n");
+
+  draw_x(input_image, output_image);
+
+  write_bitmap(output_image, argv[2]);
+
+  free(coordinates);
+  end = clock();
+  double time_spent = (double)(end - start) / CLOCKS_PER_SEC;
+  printf("Time taken: %f seconds\n", time_spent);
+
+>>>>>>> Stashed changes
   return 0;
 }
