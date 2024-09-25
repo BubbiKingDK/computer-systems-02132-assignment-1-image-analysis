@@ -7,15 +7,32 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "cbmp.h"
-
+#include <limits.h>
+#include <math.h>
+#include <windows.h>
+#include <psapi.h>
 #include <time.h>
 
-#define treshhold 90
+
+#define THRESHOLD 90
 
 #define LINE_LENGTH 10
 #define THICKNESS 3
 
-int count = 1;
+#define KERNEL_SIZE 25
+#define RADIUS 12
+#define MAX_VALUE 255
+#define MIN_VALUE -140
+
+int kernel[KERNEL_SIZE][KERNEL_SIZE];
+int center = KERNEL_SIZE / 2;
+
+unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
+unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
+unsigned char modified_image[BMP_WIDTH][BMP_HEIGTH];
+int convoluted_image[BMP_WIDTH][BMP_HEIGTH] = {0};
+unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH];
+
 int coordinates_count = 0;
 
 typedef struct
@@ -40,14 +57,6 @@ void addCoordinate(int x, int y)
   coordinates[coordinates_count - 1].x = x;
   coordinates[coordinates_count - 1].y = y;
 }
-
-// Declaring the array to store the image (unsigned char = unsigned 8 bit)
-unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
-unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
-unsigned char modified_image[BMP_WIDTH][BMP_HEIGTH];
-
-unsigned char distance_image[BMP_WIDTH][BMP_HEIGTH];
-unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH];
 
 /*
 //Function to invert pixels of an image (negative)
@@ -86,7 +95,6 @@ void greyScale(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], u
 }
 */
 
-// New Grey Scale function:
 void greyScale(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char grey_scale_image[BMP_WIDTH][BMP_HEIGTH])
 {
   for (int x = 0; x < BMP_WIDTH; x++)
@@ -104,84 +112,52 @@ void blackAndWhite(unsigned char grey_scale_image[BMP_WIDTH][BMP_HEIGTH], unsign
   {
     for (int y = 0; y < BMP_HEIGTH; y++)
     {
-      black_white_image[x][y] = (grey_scale_image[x][y] >= treshhold) ? 255 : 0;
+      black_white_image[x][y] = (grey_scale_image[x][y] >= THRESHOLD) ? 1 : 0;
     }
   }
 }
 
-// Function to check if a pixel and its surrounding pixels are white
-int checkSurroundingPixels(int x, int y, unsigned char image[BMP_WIDTH][BMP_HEIGTH])
+void removeBackGround(unsigned char grey_scale_image[BMP_WIDTH][BMP_HEIGTH], unsigned char black_white_image[BMP_WIDTH][BMP_HEIGTH])
 {
-  // Moduler!
-  int offsets[4][2] = {
-      {-1, 0}, // Left
-      {1, 0},  // Right
-      {0, -1}, // Up
-      {0, 1}   // Down
-  };
-
-  for (int i = 0; i < sizeof(offsets) / sizeof(offsets[0]); i++)
+  for (int x = 0; x < BMP_WIDTH; x++)
   {
-
-    int new_x = x + offsets[i][0];
-    int new_y = y + offsets[i][1];
-
-    // Check if surounding pixels is in bound:
-    if (new_x >= 0 && new_x < BMP_WIDTH && new_y >= 0 && new_y < BMP_HEIGTH)
+    for (int y = 0; y < BMP_HEIGTH; y++)
     {
-      if (image[new_x][new_y] != 255)
-      {
-        return 0;
-      }
-    }
-    else
-    {
-      // Might need an edge case handling here...:
-      return 0;
+      // black_white_image[x][y] = (grey_scale_image[x][y] >= THRESHOLD) ? black_white_image[x][y] : 0;
+      black_white_image[x][y] = (grey_scale_image[x][y] >= THRESHOLD) ? 255 : 0;
     }
   }
-  return 1;
 }
 
-/*
-int whiteInOuter(int window[13][13])
+void convertTo3D(unsigned char image[BMP_WIDTH][BMP_HEIGTH], unsigned char invertedImage[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS])
 {
-  for (int i = 0; i < 13; i++)
+  // int maxValue = findMaxValue(image);
+  // maxValue = maxValue <= 0 ? 1 : maxValue;
+
+  for (int i = 0; i < BMP_WIDTH; i++)
   {
-    if (window[0][i] || window[12][i] || window[i][0] || window[i][12])
+    for (int j = 0; j < BMP_HEIGTH; j++)
     {
-      return 1;
+      invertedImage[i][j][0] = image[i][j];
+      invertedImage[i][j][1] = image[i][j];
+      invertedImage[i][j][2] = image[i][j];
     }
   }
-  return 0;
 }
 
-int checkInner(int window[13][13], int centerX, int centerY)
+void convertToUnsignedChar(int image[BMP_WIDTH][BMP_HEIGTH], unsigned char output_image[BMP_WIDTH][BMP_HEIGTH])
 {
-  int sum_x = 0, sum_y = 0, count = 0;
+  // int maxValue = findMaxValue(image);
+  // maxValue = maxValue <= 0 ? 1 : maxValue;
 
-  for (int i = 0; i < 13; i++)
+  for (int i = 0; i < BMP_WIDTH; i++)
   {
-    for (int j = 0; j < 13; j++)
+    for (int j = 0; j < BMP_HEIGTH; j++)
     {
-      if (window[i][j] == 1)
-      {
-        sum_x += i;
-        sum_y += j;
-        count++;
-      }
+      output_image[i][j] = image[i][j];
     }
   }
-
-  if (count == 0)
-  {
-    return 0;
-  }
-
-  addCoordinate(centerX + sum_x / count - 6, centerY + sum_y / count - 6);
-  return 1;
 }
-*/
 
 unsigned char getPixelValue(unsigned char image[BMP_WIDTH][BMP_HEIGTH], int x, int y)
 {
@@ -192,9 +168,134 @@ unsigned char getPixelValue(unsigned char image[BMP_WIDTH][BMP_HEIGTH], int x, i
   return 0; // Out-of-bounds, return 0
 }
 
-void extract_window(unsigned char image[BMP_WIDTH][BMP_HEIGTH], int centerX, int centerY, unsigned char modified_image[BMP_WIDTH][BMP_HEIGTH])
+void convolution(int kernel[KERNEL_SIZE][KERNEL_SIZE], unsigned char input[BMP_WIDTH][BMP_HEIGTH], int output[BMP_WIDTH][BMP_HEIGTH])
 {
-  if (!image[centerX][centerY])
+  unsigned char radius = KERNEL_SIZE / 2;
+  int kernel_sum = 0;
+  double temp = 0.037;
+
+  // Beregn summen af kernelværdierne
+  for (int i = 0; i < KERNEL_SIZE; i++)
+  {
+    for (int j = 0; j < KERNEL_SIZE; j++)
+    {
+      kernel_sum += kernel[i][j];
+    }
+  }
+
+  for (int i = 0; i < BMP_WIDTH; i++)
+  {
+    for (int j = 0; j < BMP_HEIGTH; j++)
+    {
+      if (!getPixelValue(input, i, j))
+      {
+        continue;
+      }
+      int sum = 0;
+
+      // Konvolutionsoperation
+      for (int m = -radius; m <= radius; m++)
+      {
+        for (int n = -radius; n <= radius; n++)
+        {
+          // Hent pixelværdi med grænsekontrol
+          unsigned char pixel_value = getPixelValue(input, i + m, j + n);
+          sum += pixel_value * kernel[m + radius][n + radius];
+        }
+      }
+
+      // Normaliser og begræns outputværdi
+      if (kernel_sum != 0)
+      {
+        sum /= kernel_sum; // Normalisering af summen
+      }
+
+      int threshold = (int)(kernel_sum * temp);
+
+      if ((i < 3 && i >= 0) || (i < BMP_WIDTH - 1 && i >= BMP_WIDTH - 4) || (j < 3 && j >= 0) || (j < BMP_HEIGTH - 1 && j >= BMP_HEIGTH - 4))
+      {
+        double temp = 0.7;
+        threshold = (int)(threshold * temp);
+      }
+
+      if (sum >= threshold)
+      {
+        // Behold det område, der matcher kernel
+        for (int m = -radius; m <= radius; m++)
+        {
+          for (int n = -radius; n <= radius; n++)
+          {
+            // Sørg for, at vi holder os inden for billedets grænser
+            if (i + m >= 0 && i + m < BMP_WIDTH && j + n >= 0 && j + n < BMP_HEIGTH)
+            {
+              if (pow(m, 2) + pow(n, 2) < pow(radius / 5, 2))
+              {
+                output[i + m][j + n] = 255; // Sortér de omkringliggende pixels
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+void create_kernel(int kernel[KERNEL_SIZE][KERNEL_SIZE])
+{
+  for (int i = 0; i < KERNEL_SIZE; i++)
+  {
+    for (int j = 0; j < KERNEL_SIZE; j++)
+    {
+      // Compute the distance from the center
+      double distance = sqrt((i - center) * (i - center) + (j - center) * (j - center));
+
+      // Normalize the distance and calculate intensity
+      if (distance <= RADIUS)
+      {
+        double normalized_distance = distance / RADIUS;
+        kernel[i][j] = (int)(MAX_VALUE * (1 - normalized_distance));
+      }
+      else
+      {
+        kernel[i][j] = MIN_VALUE;
+      }
+    }
+  }
+}
+
+int erode_image(unsigned char current_image[BMP_WIDTH][BMP_HEIGTH], unsigned char next_image[BMP_WIDTH][BMP_HEIGTH])
+{
+  int eroded = 0;
+
+  for (int x = 0; x < BMP_WIDTH; x++)
+  {
+    for (int y = 0; y < BMP_HEIGTH; y++)
+    {
+      if (current_image[x][y] != 255 || x - 1 < 0 || y - 1 < 0 || x + 1 >= BMP_WIDTH || y + 1 >= BMP_HEIGTH)
+      {
+        next_image[x][y] = 0;
+        continue;
+      }
+      if (current_image[x - 1][y] && // Top
+          current_image[x + 1][y] && // Bund
+          current_image[x][y - 1] && // Venstre
+          current_image[x][y + 1])   // Højre
+      {
+        next_image[x][y] = 255;
+      }
+      else
+      {
+        next_image[x][y] = 0;
+        eroded = 1;
+      }
+    }
+  }
+  return eroded;
+}
+
+void find_cell(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], int centerX, int centerY)
+{
+  if (!input_image[centerX][centerY])
   {
     return;
   }
@@ -202,15 +303,15 @@ void extract_window(unsigned char image[BMP_WIDTH][BMP_HEIGTH], int centerX, int
   int radius = 6;
   for (int i = -radius; i <= radius; i++)
   {
-    if (getPixelValue(image, centerX - radius, centerY + i) || getPixelValue(image, centerX + radius, centerY + i) || getPixelValue(image, centerX + i, centerY - radius) || getPixelValue(image, centerX + i, centerY + radius))
+    if (getPixelValue(input_image, centerX - radius, centerY + i) || getPixelValue(input_image, centerX + radius, centerY + i) || getPixelValue(input_image, centerX + i, centerY - radius) || getPixelValue(input_image, centerX + i, centerY + radius))
     {
       return;
     }
   }
 
   addCoordinate(centerX, centerY);
+  // printf("Found cell at (%d, %d)\n", centerX, centerY);
 
-  // If a dot is found, make the surrounding area black
   for (int i = -radius; i <= radius; i++)
   {
     for (int j = -radius; j <= radius; j++)
@@ -220,135 +321,68 @@ void extract_window(unsigned char image[BMP_WIDTH][BMP_HEIGTH], int centerX, int
 
       if (x >= 0 && x < BMP_WIDTH && y >= 0 && y < BMP_HEIGTH)
       {
-        modified_image[x][y] = 0;
+        input_image[x][y] = 0;
       }
     }
   }
 }
 
-int min(int a, int b)
-{
-  return (a < b) ? a : b;
-}
-
-void distance(unsigned char black_white_image[BMP_WIDTH][BMP_HEIGTH], unsigned char distance_image[BMP_WIDTH][BMP_HEIGTH])
-{
-  // Initialize the distance_image array:
-  for (int x = 0; x < BMP_WIDTH; x++)
-  {
-    for (int y = 0; y < BMP_HEIGTH; y++)
-    {
-      if (black_white_image[x][y] == 0)
-      {
-        distance_image[x][y] = 0; // Black point, distance = 0
-      }
-      else
-      {
-        distance_image[x][y] = 255; // White point, initial distance = "infinite" (255)
-      }
-    }
-  }
-
-  // Forward pass
-  for (int i = 0; i < BMP_HEIGTH; i++)
-  {
-    for (int j = 0; j < BMP_WIDTH; j++)
-    {
-      if (i > 0)
-        distance_image[i][j] = min(distance_image[i][j], distance_image[i - 1][j] + 1);
-      if (j > 0)
-        distance_image[i][j] = min(distance_image[i][j], distance_image[i][j - 1] + 1);
-    }
-  }
-
-  // Backward pass
-  for (int i = BMP_HEIGTH - 1; i >= 0; i--)
-  {
-    for (int j = BMP_WIDTH - 1; j >= 0; j--)
-    {
-      if (i < BMP_HEIGTH - 1)
-        distance_image[i][j] = min(distance_image[i][j], distance_image[i + 1][j] + 1);
-      if (j < BMP_WIDTH - 1)
-        distance_image[i][j] = min(distance_image[i][j], distance_image[i][j + 1] + 1);
-    }
-  }
-
-  for (int i = 0; i < BMP_HEIGTH; i++)
-  {
-    for (int j = 0; j < BMP_WIDTH; j++)
-    {
-      distance_image[i][j] = distance_image[i][j] < 3 ? 0 : 255;
-    }
-  }
-}
-
-void countDots()
+void count_cells(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned char output_image[BMP_WIDTH][BMP_HEIGTH])
 {
   for (int i = 0; i < BMP_WIDTH; i++)
   {
     for (int j = 0; j < BMP_HEIGTH; j++)
     {
-      extract_window(modified_image, i, j, modified_image);
+      find_cell(input_image, i, j);
     }
   }
+  unsigned char(*temp)[BMP_HEIGTH] = input_image;
+  input_image = output_image;
+  output_image = temp;
 }
 
-int erodeImage(unsigned char black_white_image[BMP_WIDTH][BMP_HEIGTH], unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH])
+void analysis_loop(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned char output_image[BMP_WIDTH][BMP_HEIGTH])
 {
-  int eroded = 0;
-  unsigned char temp_image[BMP_WIDTH][BMP_HEIGTH];
+  unsigned char(*current_image)[BMP_HEIGTH] = input_image;
+  unsigned char(*next_image)[BMP_HEIGTH] = output_image;
 
-  // Copy image to temp:
-  for (int x = 0; x < BMP_WIDTH; x++)
-  {
-    for (int y = 0; y < BMP_HEIGTH; y++)
-    {
-      temp_image[x][y] = black_white_image[x][y];
-    }
-  }
+  int count = 0;
+  int eroded = 1;
 
-  for (int x = 0; x < BMP_WIDTH; x++)
+  while (eroded)
   {
-    for (int y = 0; y < BMP_HEIGTH; y++)
+    if (count % 2 == 0 || count == 0)
     {
-      if (temp_image[x][y] != 255)
+      eroded = erode_image(current_image, next_image);
+      if (!eroded)
       {
-        black_white_image[x][y] = 0;
-        continue;
+        break;
       }
-      if (!checkSurroundingPixels(x, y, temp_image))
-      {
-        black_white_image[x][y] = 0;
-        eroded = 1;
-      }
+      count_cells(next_image, current_image);
     }
-  }
-  for (int i = 0; i < BMP_WIDTH; i++) {
-    for (int j = 0; j < BMP_HEIGTH; j++) {
-      eroded_image[i][j] = black_white_image[i][j];
-    }
-  }
-  // printf("Eroded has run %d times\n", count++);
-  if (eroded)
-  {
-    countDots();
-  }
-
-  return eroded;
-}
-
-// Debugging
-//  This function converts the 2D image back into a 3D image so we can svae the image to a file, through the provided functions.
-void convertTo3D(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS])
-{
-  for (int x = 0; x < BMP_WIDTH; x++)
-  {
-    for (int y = 0; y < BMP_HEIGTH; y++)
+    else
     {
-      unsigned char pixel_value = input_image[x][y];
-      output_image[x][y][0] = pixel_value;
-      output_image[x][y][1] = pixel_value;
-      output_image[x][y][2] = pixel_value;
+      eroded = erode_image(next_image, current_image);
+      if (!eroded)
+      {
+        break;
+      }
+      count_cells(current_image, next_image);
+    }
+    count++;
+  }
+
+  printf("Times eroded: %d\n", count);
+
+  // Just for debugging
+  if (count % 2 == 0 || count == 0)
+  {
+    for (int i = 0; i < BMP_WIDTH; i++)
+    {
+      for (int j = 0; j < BMP_HEIGTH; j++)
+      {
+        output_image[i][j] = input_image[i][j];
+      }
     }
   }
 }
@@ -405,6 +439,18 @@ void draw_x(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsi
   }
 }
 
+void printMemoryUsage()
+{
+  PROCESS_MEMORY_COUNTERS pmc;
+  if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc)))
+  {
+    printf("Peak Page File Bytes: %zu\n", pmc.PeakPagefileUsage);
+    printf("Peak Working Set Bytes: %zu\n", pmc.PeakWorkingSetSize);
+    printf("Page File Bytes: %zu\n", pmc.PagefileUsage);
+    printf("Working Set Bytes: %zu\n", pmc.WorkingSetSize);
+  }
+}
+
 // Main function
 int main(int argc, char **argv)
 {
@@ -429,36 +475,28 @@ int main(int argc, char **argv)
   read_bitmap(argv[1], input_image);
 
   greyScale(input_image, modified_image);
-  blackAndWhite(modified_image, modified_image);
 
-  /*
-  for (int i = 0; i < 26; i++) {
-    erodeImage(modified_image, modified_image);
-  }
-  */
-  //distance(modified_image, modified_image);
+  removeBackGround(modified_image, modified_image);
+  convertTo3D(modified_image, output_image);
+  write_bitmap(output_image, "b_and_w.bmp");
 
-  while (erodeImage(modified_image, eroded_image));
+  create_kernel(kernel);
 
-  /*for (int i = 0; i < size; i++) {
-      for (int j = 0; j < size; j++) {
-          printf("%d ", window[i][j]);
-      }
-      printf("\n");
-  }*/
+  convolution(kernel, modified_image, convoluted_image);
 
-  // Debugging
-  // Convert grayscale 2D image to 3D RGB format
+  convertToUnsignedChar(convoluted_image, modified_image);
+  convertTo3D(modified_image, output_image);
+  write_bitmap(output_image, "convulted_image.bmp");
 
-  //convertTo3D(modified_image, output_image);
+  analysis_loop(modified_image, eroded_image);
 
-  // Save image to file
-  printf("We found %d dots!\n", coordinates_count);
-  printf("Done!\n");
+  printf("Cells found: %d\n", coordinates_count);
 
   draw_x(input_image, output_image);
 
   write_bitmap(output_image, argv[2]);
+
+  printMemoryUsage();
 
   free(coordinates);
   end = clock();

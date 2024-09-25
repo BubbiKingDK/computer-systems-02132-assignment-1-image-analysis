@@ -1,3 +1,6 @@
+For memory usage analysis:
+    - To compile: gcc cbmp.c main.c -o main.exe -std=c99 -lpsapi
+
 This folder contains code and material for the Assignment 1.
 
 To help you get started, we provide you with the library 'cbmp.h' + 'cbmp.c' to load and save images to bmp files. The description of the functions offered by this library is provided in the assignment document (in the Algorithm Step 1 and Step 7 descriptions).
