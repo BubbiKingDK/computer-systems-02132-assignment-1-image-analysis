@@ -4,6 +4,8 @@
 // To compile (win): gcc cbmp.c main.c -o main.exe -std=c99
 // To run (win): main.exe example.bmp example_inv.bmp
 
+//gcc cbmp.c main.c -o main.exe -std=c99 -lpsapi -O3
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "cbmp.h"
@@ -57,43 +59,6 @@ void addCoordinate(int x, int y)
   coordinates[coordinates_count - 1].x = x;
   coordinates[coordinates_count - 1].y = y;
 }
-
-/*
-//Function to invert pixels of an image (negative)
-void invert(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS]){
-  for (int x = 0; x < BMP_WIDTH; x++)
-  {
-    for (int y = 0; y < BMP_HEIGTH; y++)
-    {
-      int average = 0;
-      for (int c = 0; c < BMP_CHANNELS; c++)
-      {
-        output_image[x][y][c] = (input_image[x][y][0] + input_image[x][y][1] + input_image[x][y][2]) / 3;
-      }
-    }
-  }
-}
-*/
-
-/*
-// Old Grey scale:
-void greyScale(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char grey_scale_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS])
-{
-  for (int x = 0; x < BMP_WIDTH; x++)
-  {
-    for (int y = 0; y < BMP_HEIGTH; y++)
-    {
-      // Calculate the grayscale value only once per pixel
-      int average = (input_image[x][y][0] + input_image[x][y][1] + input_image[x][y][2] + 1) / 3;
-
-      for (int c = 0; c < BMP_CHANNELS; c++)
-      {
-        grey_scale_image[x][y][c] = average;
-      }
-    }
-  }
-}
-*/
 
 void greyScale(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char grey_scale_image[BMP_WIDTH][BMP_HEIGTH])
 {
@@ -451,6 +416,7 @@ void printMemoryUsage()
   }
 }
 
+/*
 // Main function
 int main(int argc, char **argv)
 {
@@ -505,3 +471,4 @@ int main(int argc, char **argv)
 
   return 0;
 }
+*/
