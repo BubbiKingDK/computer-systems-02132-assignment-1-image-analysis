@@ -23,6 +23,7 @@
 #include "after_processing.c"
 #include "pixel_value.h"
 #include "pixel_value.c"
+#include "analysis.c"
 
 
 
