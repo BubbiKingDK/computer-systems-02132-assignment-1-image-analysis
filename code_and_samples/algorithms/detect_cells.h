@@ -1,6 +1,7 @@
 #ifndef DETECT_CELLS_H
 #define DETECT_CELLS_H
-#include "cbmp.h"
+#include "../cbmp.h"
+#define MAX_COORDINATES 500
 
 int coordinates_count = 0;
 typedef struct
@@ -9,9 +10,10 @@ typedef struct
   int y;
 } Coordinate;
 
-Coordinate *coordinates = NULL;
+Coordinate coordinates[MAX_COORDINATES];
 
 void find_cell(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], int centerX, int centerY);
 void count_cells(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned char output_image[BMP_WIDTH][BMP_HEIGTH]);
+void resetCoordinates();
 
 #endif

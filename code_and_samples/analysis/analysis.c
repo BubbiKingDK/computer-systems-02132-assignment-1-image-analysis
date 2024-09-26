@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "cbmp.h"
+#include "../cbmp.h"
 
 void analysis_loop(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned char output_image[BMP_WIDTH][BMP_HEIGTH])
 {
@@ -33,8 +33,9 @@ void analysis_loop(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned ch
     count++;
   }
 
-  printf("Times eroded: %d\n", count);
+  //printf("Times eroded: %d\n", count);
 
+  
   // Just for debugging
   if (count % 2 == 0 || count == 0)
   {

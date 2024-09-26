@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "cbmp.h"
+#include "../cbmp.h"
 
 int erode_image(unsigned char current_image[BMP_WIDTH][BMP_HEIGTH], unsigned char next_image[BMP_WIDTH][BMP_HEIGTH])
 {

@@ -1,3 +1,11 @@
+For integration test:
+    - gcc cbmp.c test/integration_test.c -o test/integration_test.exe -std=c99 -lpsapi -O3
+    - ./test/integration_test.exe
+
+For main:
+    - gcc cbmp.c main.c -o main.exe -std=c99 -lpsapi -O3
+    - ./main.exe samples/easy/1EASY.bmp example_inv.bmp
+
 For memory usage analysis:
     - To compile: gcc cbmp.c main.c -o main.exe -std=c99 -lpsapi
 

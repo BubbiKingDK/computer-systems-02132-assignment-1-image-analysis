@@ -1,23 +1,26 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "cbmp.h"
-#include "pixel_value.h"
+#include "../cbmp.h"
+#include "../helper_functions/pixel_value.h"
 
 #include "detect_cells.h"
 
 void addCoordinate(int x, int y)
 {
-  coordinates_count++;
-  coordinates = (Coordinate *)realloc(coordinates, coordinates_count * sizeof(Coordinate));
-
-  if (coordinates == NULL)
+  if (coordinates_count >= MAX_COORDINATES)
   {
-    fprintf(stderr, "Memory allocation failed!\n");
-    exit(1);
+    fprintf(stderr, "Cannot add more coordinates: limit reached!\n");
+    return; // Stop, hvis vi overskrider grænsen
   }
 
-  coordinates[coordinates_count - 1].x = x;
-  coordinates[coordinates_count - 1].y = y;
+  coordinates[coordinates_count].x = x;
+  coordinates[coordinates_count].y = y;
+  coordinates_count++;
+}
+
+void resetCoordinates()
+{
+  coordinates_count = 0;
 }
 
 void find_cell(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], int centerX, int centerY)

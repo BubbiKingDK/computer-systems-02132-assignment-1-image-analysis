@@ -1,9 +1,8 @@
-//This file contains method for convolution
+// This file contains method for convolution
 #include <stdlib.h>
 #include <stdio.h>
-#include "cbmp.h"
-#include "pixel_value.h"
-
+#include "../cbmp.h"
+#include "../helper_functions/pixel_value.h"
 
 #define KERNEL_SIZE 25
 
@@ -67,9 +66,9 @@ void convolution(int kernel[KERNEL_SIZE][KERNEL_SIZE], unsigned char input[BMP_W
             // Sørg for, at vi holder os inden for billedets grænser
             if (i + m >= 0 && i + m < BMP_WIDTH && j + n >= 0 && j + n < BMP_HEIGTH)
             {
-              if (pow(m, 2) + pow(n, 2) < pow(radius / 5, 2))
+              if (pow(m, 2) + pow(n, 2) < pow(radius / 4, 2))
               {
-                output[i + m][j + n] = 255; // Sortér de omkringliggende pixels
+                output[i + m][j + n] = 255;
               }
             }
           }

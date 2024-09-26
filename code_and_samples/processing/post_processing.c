@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "cbmp.h"
-#include "detect_cells.c"
+#include "../cbmp.h"
+#include "../algorithms/detect_cells.c"
 
 #define LINE_LENGTH 10
 #define THICKNESS 3

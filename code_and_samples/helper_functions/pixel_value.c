@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "cbmp.h"
+#include "../cbmp.h"
 #include "pixel_value.h"
 
 
