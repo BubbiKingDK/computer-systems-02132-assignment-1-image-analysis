@@ -58,11 +58,9 @@ void image_processing()
 
 void testing(char *filepath)
 {
-
     resetCoordinates();
 
     memset(convoluted_image, 0, sizeof(convoluted_image));
-
 
     read_bitmap(filepath, input_image);
 
@@ -101,10 +99,7 @@ void run(int argc, char **argv, int isTesting)
 
     // Load image from file
     // Try reading the image until successful
-    while (read_correct != 1) {
-        read_bitmap(argv[1], input_image);
-    }
-    
+    read_bitmap(argv[1], input_image);
 
     image_processing();
 

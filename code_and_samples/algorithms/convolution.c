@@ -32,7 +32,7 @@ void convolution(int kernel[KERNEL_SIZE][KERNEL_SIZE], unsigned char input[BMP_W
 
       if (output[i][j])
       {
-        //continue;
+        continue;
       }
 
       int sum = 0;

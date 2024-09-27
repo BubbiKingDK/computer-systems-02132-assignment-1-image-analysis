@@ -29,7 +29,7 @@ void test_easy()
     double cpu_time_used;
     int total_cells = 0;
     double total_time = 0.0;
-    
+
     printf("\n---------------------------\n");
     printf("          Easy Test       \n");
     printf("---------------------------\n");
@@ -44,33 +44,30 @@ void test_easy()
         char *argv[] = {
             "",
             ("%s", input_filepath_easy),
-            ""
-        };
+            ""};
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         // For debugging purposes, you can print the filepath:
-        //printf("File path: %s\n", input_filepath_easy);
+        // printf("File path: %s\n", input_filepath_easy);
 
         start = clock();
         run(argc, argv, 1);
+        draw_x(input_image);
+        char path[1024]; // Tildel en passende størrelse til 'path'
+        snprintf(path, sizeof(path), "test/output/easy/easy%d.bmp", i + 1);
+        write_bitmap(input_image, path);
+
         end = clock();
 
-        if (read_correct){
-            cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-            printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
-        } 
-        else
-        {
-            printf("%-10d %-10d %-10s\n", i + 1, coordinates_count, "error");
-            pic_count --;
-        }
+        cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+        printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
 
         total_cells += coordinates_count;
         total_time += cpu_time_used;
     }
     int average_cells = total_cells / 10;
     double percentage_found = ((double)average_cells / TOTAL_CELLS) * 100;
-    double average_time = (double) (total_time / pic_count);
+    double average_time = (double)(total_time / pic_count);
 
     printf("---------------------------\n");
     printf("Average time %.2f s\n", average_time);
@@ -100,7 +97,7 @@ void test_medium()
     double cpu_time_used;
     int total_cells = 0;
     double total_time = 0.0;
-    
+
     printf("\n---------------------------\n");
     printf("        Medium Test        \n");
     printf("---------------------------\n");
@@ -115,33 +112,30 @@ void test_medium()
         char *argv[] = {
             "",
             ("%s", input_filepath_medium),
-            ""
-        };
+            ""};
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         // For debugging purposes, you can print the filepath:
-        //printf("File path: %s\n", input_filepath_easy);
+        // printf("File path: %s\n", input_filepath_easy);
 
         start = clock();
         run(argc, argv, 1);
+        draw_x(input_image);
+        char path[1024]; // Tildel en passende størrelse til 'path'
+        snprintf(path, sizeof(path), "test/output/medium/medium%d.bmp", i + 1);
+        write_bitmap(input_image, path);
+
         end = clock();
-        
-        if (read_correct){
-            cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-            printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
-        } 
-        else
-        {
-            printf("%-10d %-10d %-10s\n", i + 1, coordinates_count, "error");
-            pic_count --;
-        }
+
+        cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+        printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
 
         total_cells += coordinates_count;
         total_time += cpu_time_used;
     }
     int average_cells = total_cells / 10;
     double percentage_found = ((double)average_cells / TOTAL_CELLS) * 100;
-    double average_time = (double) (total_time / pic_count);
+    double average_time = (double)(total_time / pic_count);
 
     printf("---------------------------\n");
     printf("Average time %.2f s\n", average_time);
@@ -171,7 +165,7 @@ void test_hard()
     double cpu_time_used;
     int total_cells = 0;
     double total_time = 0.0;
-    
+
     printf("\n---------------------------\n");
     printf("         Hard Test       \n");
     printf("---------------------------\n");
@@ -186,33 +180,30 @@ void test_hard()
         char *argv[] = {
             "",
             ("%s", input_filepath_hard),
-            ""
-        };
+            ""};
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         // For debugging purposes, you can print the filepath:
-        //printf("File path: %s\n", input_filepath_easy);
+        // printf("File path: %s\n", input_filepath_easy);
 
         start = clock();
         run(argc, argv, 1);
+        draw_x(input_image);
+        char path[1024]; // Tildel en passende størrelse til 'path'
+        snprintf(path, sizeof(path), "test/output/hard/hard%d.bmp", i + 1);
+        write_bitmap(input_image, path);
+
         end = clock();
 
-        if (read_correct){
-            cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-            printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
-        } 
-        else
-        {
-            printf("%-10d %-10d %-10s\n", i + 1, coordinates_count, "error");
-            pic_count --;
-        }
+        cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+        printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
 
         total_cells += coordinates_count;
         total_time += cpu_time_used;
     }
     int average_cells = total_cells / 10;
     double percentage_found = ((double)average_cells / TOTAL_CELLS) * 100;
-    double average_time = (double) (total_time / pic_count);
+    double average_time = (double)(total_time / pic_count);
 
     printf("---------------------------\n");
     printf("Average time %.2f s\n", average_time);
@@ -237,7 +228,7 @@ void test_impossible()
     double cpu_time_used;
     int total_cells = 0;
     double total_time = 0.0;
-    
+
     printf("\n---------------------------\n");
     printf("      Impossible Test      \n");
     printf("---------------------------\n");
@@ -252,33 +243,29 @@ void test_impossible()
         char *argv[] = {
             "",
             ("%s", input_filepath_impossible),
-            ""
-        };
+            ""};
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         // For debugging purposes, you can print the filepath:
-        //printf("File path: %s\n", input_filepath_easy);
+        // printf("File path: %s\n", input_filepath_easy);
 
         start = clock();
         run(argc, argv, 1);
+        draw_x(input_image);
+        char path[1024]; // Tildel en passende størrelse til 'path'
+        snprintf(path, sizeof(path), "test/output/impossible/impossible%d.bmp", i + 1);
+        write_bitmap(input_image, path);
         end = clock();
 
-        if (read_correct){
-            cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-            printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
-        } 
-        else
-        {
-            printf("%-10d %-10d %-10s\n", i + 1, coordinates_count, "error");
-            pic_count --;
-        }
+        cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+        printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
 
         total_cells += coordinates_count;
         total_time += cpu_time_used;
     }
     int average_cells = total_cells / 5;
     double percentage_found = ((double)average_cells / TOTAL_CELLS) * 100;
-    double average_time = (double) (total_time / pic_count);
+    double average_time = (double)(total_time / pic_count);
 
     printf("---------------------------\n");
     printf("Average time %.2f s\n", average_time);

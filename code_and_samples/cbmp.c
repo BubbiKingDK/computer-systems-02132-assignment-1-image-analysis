@@ -23,8 +23,6 @@
 #define DEPTH_BYTES 2
 #define DEPTH_OFFSET 28
 
-extern int read_correct;
-
 // Pixel structure
 typedef struct pixel_data
 {
@@ -167,19 +165,14 @@ BMP* bopen(char* file_path)
 	//printf("bmp->depth %d\n", bmp->depth);
 
 
-    if(!_validate_depth(bmp->depth))
+    while (!_validate_depth(bmp->depth))
     {
         //_throw_error("Invalid file depth");
 
         fprintf(stderr, "Error: Invalid file depth \n");
-        read_correct = 0; 
         free(bmp->file_byte_contents); 
         free(bmp);  
-        return NULL;  // Return NULL to indicate failure
-    } 
-    else 
-    {
-        read_correct = 1;  // Set read_correct to 1 when successful
+        bopen(file_path); // Return NULL to indicate failure
     }
 
     _populate_pixel_array(bmp);
