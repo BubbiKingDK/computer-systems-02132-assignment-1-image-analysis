@@ -17,8 +17,10 @@
 #include "../helper_functions/pixel_value.c"
 #include "../analysis/analysis.c"
 
+int read_correct = 0;
+
 unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
-unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
+//unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char modified_image[BMP_WIDTH][BMP_HEIGTH];
 int convoluted_image[BMP_WIDTH][BMP_HEIGTH] = {0};
 unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH];
@@ -61,6 +63,7 @@ void testing(char *filepath)
 
     memset(convoluted_image, 0, sizeof(convoluted_image));
 
+
     read_bitmap(filepath, input_image);
 
     image_processing();
@@ -97,13 +100,17 @@ void run(int argc, char **argv, int isTesting)
     printf("Example program - 02132 - A1\n");
 
     // Load image from file
-    read_bitmap(argv[1], input_image);
+    // Try reading the image until successful
+    while (read_correct != 1) {
+        read_bitmap(argv[1], input_image);
+    }
+    
 
     image_processing();
 
-    draw_x(input_image, output_image);
+    draw_x(input_image);
 
-    write_bitmap(output_image, argv[2]);
+    write_bitmap(input_image, argv[2]);
 
     printf("Cells found: %d\n", coordinates_count);
 

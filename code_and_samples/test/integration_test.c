@@ -6,8 +6,11 @@
 
 #define TOTAL_CELLS 300
 
+extern int read_correct;
+
 void test_easy()
 {
+    int pic_count = 10;
     const char *sample_folder = "samples";
     const char *easy_folder = "easy";
     const char *input_filenames_easy[10] = {
@@ -51,15 +54,23 @@ void test_easy()
         start = clock();
         run(argc, argv, 1);
         end = clock();
-        cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
 
-        printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
+        if (read_correct){
+            cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+            printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
+        } 
+        else
+        {
+            printf("%-10d %-10d %-10s\n", i + 1, coordinates_count, "error");
+            pic_count --;
+        }
+
         total_cells += coordinates_count;
         total_time += cpu_time_used;
     }
     int average_cells = total_cells / 10;
     double percentage_found = ((double)average_cells / TOTAL_CELLS) * 100;
-    double average_time = (double) (total_time / 10);
+    double average_time = (double) (total_time / pic_count);
 
     printf("---------------------------\n");
     printf("Average time %.2f s\n", average_time);
@@ -70,6 +81,7 @@ void test_easy()
 
 void test_medium()
 {
+    int pic_count = 10;
     const char *sample_folder = "samples";
     const char *medium_folder = "medium";
     const char *input_filenames_medium[10] = {
@@ -113,15 +125,23 @@ void test_medium()
         start = clock();
         run(argc, argv, 1);
         end = clock();
-        cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+        
+        if (read_correct){
+            cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+            printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
+        } 
+        else
+        {
+            printf("%-10d %-10d %-10s\n", i + 1, coordinates_count, "error");
+            pic_count --;
+        }
 
-        printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
         total_cells += coordinates_count;
         total_time += cpu_time_used;
     }
     int average_cells = total_cells / 10;
     double percentage_found = ((double)average_cells / TOTAL_CELLS) * 100;
-    double average_time = (double) (total_time / 10);
+    double average_time = (double) (total_time / pic_count);
 
     printf("---------------------------\n");
     printf("Average time %.2f s\n", average_time);
@@ -132,6 +152,7 @@ void test_medium()
 
 void test_hard()
 {
+    int pic_count = 10;
     const char *sample_folder = "samples";
     const char *hard_folder = "hard";
     const char *input_filenames_hard[10] = {
@@ -175,15 +196,23 @@ void test_hard()
         start = clock();
         run(argc, argv, 1);
         end = clock();
-        cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
 
-        printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
+        if (read_correct){
+            cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+            printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
+        } 
+        else
+        {
+            printf("%-10d %-10d %-10s\n", i + 1, coordinates_count, "error");
+            pic_count --;
+        }
+
         total_cells += coordinates_count;
         total_time += cpu_time_used;
     }
     int average_cells = total_cells / 10;
     double percentage_found = ((double)average_cells / TOTAL_CELLS) * 100;
-    double average_time = (double) (total_time / 10);
+    double average_time = (double) (total_time / pic_count);
 
     printf("---------------------------\n");
     printf("Average time %.2f s\n", average_time);
@@ -194,6 +223,7 @@ void test_hard()
 
 void test_impossible()
 {
+    int pic_count = 5;
     const char *sample_folder = "samples";
     const char *impossible_folder = "impossible";
     const char *input_filenames_impossible[5] = {
@@ -232,15 +262,23 @@ void test_impossible()
         start = clock();
         run(argc, argv, 1);
         end = clock();
-        cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
 
-        printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
+        if (read_correct){
+            cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+            printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
+        } 
+        else
+        {
+            printf("%-10d %-10d %-10s\n", i + 1, coordinates_count, "error");
+            pic_count --;
+        }
+
         total_cells += coordinates_count;
         total_time += cpu_time_used;
     }
     int average_cells = total_cells / 5;
     double percentage_found = ((double)average_cells / TOTAL_CELLS) * 100;
-    double average_time = (double) (total_time / 5);
+    double average_time = (double) (total_time / pic_count);
 
     printf("---------------------------\n");
     printf("Average time %.2f s\n", average_time);

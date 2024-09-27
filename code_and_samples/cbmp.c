@@ -23,6 +23,7 @@
 #define DEPTH_BYTES 2
 #define DEPTH_OFFSET 28
 
+extern int read_correct;
 
 // Pixel structure
 typedef struct pixel_data
@@ -83,6 +84,12 @@ void _get_pixel(BMP* bmp, int index, int offset, int channel);
 void read_bitmap(char * input_file_path, unsigned char output_image_array[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS]){
   // Read image into BMP struct
   BMP* in_bmp = bopen(input_file_path);
+
+  if (in_bmp == NULL) {
+        // If reading the bitmap failed, return early
+        return;
+    }
+
   int width = get_width(in_bmp);
   int height = get_height(in_bmp);
   if (width != BMP_WIDTH || height != BMP_HEIGTH) {
@@ -136,7 +143,7 @@ BMP* bopen(char* file_path)
     if (fp == NULL)
     {
         perror("Error opening file");
-        exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE); 
     }
 
     BMP* bmp = (BMP*) malloc(sizeof(BMP));
@@ -159,9 +166,20 @@ BMP* bopen(char* file_path)
 	//printf("bmp->height %d\n", bmp->height);
 	//printf("bmp->depth %d\n", bmp->depth);
 
+
     if(!_validate_depth(bmp->depth))
     {
-        _throw_error("Invalid file depth");
+        //_throw_error("Invalid file depth");
+
+        fprintf(stderr, "Error: Invalid file depth \n");
+        read_correct = 0; 
+        free(bmp->file_byte_contents); 
+        free(bmp);  
+        return NULL;  // Return NULL to indicate failure
+    } 
+    else 
+    {
+        read_correct = 1;  // Set read_correct to 1 when successful
     }
 
     _populate_pixel_array(bmp);

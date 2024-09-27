@@ -29,6 +29,12 @@ void convolution(int kernel[KERNEL_SIZE][KERNEL_SIZE], unsigned char input[BMP_W
       {
         continue;
       }
+
+      if (output[i][j])
+      {
+        //continue;
+      }
+
       int sum = 0;
 
       // Konvolutionsoperation
@@ -59,9 +65,9 @@ void convolution(int kernel[KERNEL_SIZE][KERNEL_SIZE], unsigned char input[BMP_W
       if (sum >= threshold)
       {
         // Behold det område, der matcher kernel
-        for (int m = -radius; m <= radius; m++)
+        for (int m = -2; m <= 2; m++)
         {
-          for (int n = -radius; n <= radius; n++)
+          for (int n = -2; n <= 2; n++)
           {
             // Sørg for, at vi holder os inden for billedets grænser
             if (i + m >= 0 && i + m < BMP_WIDTH && j + n >= 0 && j + n < BMP_HEIGTH)
