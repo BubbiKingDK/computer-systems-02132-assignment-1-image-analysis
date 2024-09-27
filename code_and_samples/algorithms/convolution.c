@@ -6,7 +6,7 @@
 
 #define KERNEL_SIZE 25
 
-void convolution(int kernel[KERNEL_SIZE][KERNEL_SIZE], unsigned char input[BMP_WIDTH][BMP_HEIGTH], int output[BMP_WIDTH][BMP_HEIGTH])
+void convolution(int kernel[KERNEL_SIZE][KERNEL_SIZE], unsigned char input[BMP_WIDTH][BMP_HEIGTH], unsigned char output[BMP_WIDTH][BMP_HEIGTH])
 {
   unsigned char radius = KERNEL_SIZE / 2;
   int kernel_sum = 0;
@@ -56,7 +56,7 @@ void convolution(int kernel[KERNEL_SIZE][KERNEL_SIZE], unsigned char input[BMP_W
 
       int threshold = (int)(kernel_sum * temp);
 
-      if ((i < 3 && i >= 0) || (i < BMP_WIDTH - 1 && i >= BMP_WIDTH - 4) || (j < 3 && j >= 0) || (j < BMP_HEIGTH - 1 && j >= BMP_HEIGTH - 4))
+      if ((i < 4 && i >= 0) || (i < BMP_WIDTH - 1 && i >= BMP_WIDTH - 5) || (j < 4 && j >= 0) || (j < BMP_HEIGTH - 1 && j >= BMP_HEIGTH - 5))
       {
         double temp = 0.7;
         threshold = (int)(threshold * temp);
@@ -65,17 +65,17 @@ void convolution(int kernel[KERNEL_SIZE][KERNEL_SIZE], unsigned char input[BMP_W
       if (sum >= threshold)
       {
         // Behold det område, der matcher kernel
-        for (int m = -2; m <= 2; m++)
+        for (int m = -1; m <= 1; m++)
         {
-          for (int n = -2; n <= 2; n++)
+          for (int n = -1; n <= 1; n++)
           {
             // Sørg for, at vi holder os inden for billedets grænser
             if (i + m >= 0 && i + m < BMP_WIDTH && j + n >= 0 && j + n < BMP_HEIGTH)
             {
-              if (pow(m, 2) + pow(n, 2) < pow(radius / 4, 2))
-              {
+              //if (pow(m, 2) + pow(n, 2) < pow(radius / 6, 2))
+              //{
                 output[i + m][j + n] = 255;
-              }
+              //}
             }
           }
         }

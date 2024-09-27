@@ -22,8 +22,8 @@ int read_correct = 0;
 unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 //unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char modified_image[BMP_WIDTH][BMP_HEIGTH];
-int convoluted_image[BMP_WIDTH][BMP_HEIGTH] = {0};
-unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH];
+unsigned char analysis_image[BMP_WIDTH][BMP_HEIGTH] = {0};
+//unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH];
 
 void printMemoryUsage()
 {
@@ -47,20 +47,20 @@ void image_processing()
     
     create_kernel(kernel);
 
-    convolution(kernel, modified_image, convoluted_image);
+    convolution(kernel, modified_image, analysis_image);
 
-    convertToUnsignedChar(convoluted_image, modified_image);
-    //convertTo3D(modified_image, output_image);
-    //write_bitmap(output_image, "convulted_image.bmp");
+    //convertToUnsignedChar(analysis_image, modified_image);
+    //convertTo3D(modified_image, input_image);
+    //write_bitmap(input_image, "convulted_image.bmp");
 
-    analysis_loop(modified_image, eroded_image);
+    analysis_loop(analysis_image, modified_image);
 }
 
 void testing(char *filepath)
 {
     resetCoordinates();
 
-    memset(convoluted_image, 0, sizeof(convoluted_image));
+    memset(analysis_image, 0, sizeof(analysis_image));
 
     read_bitmap(filepath, input_image);
 
