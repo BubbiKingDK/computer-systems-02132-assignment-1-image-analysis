@@ -29,6 +29,7 @@ unsigned char modified_image3[BMP_WIDTH][BMP_HEIGTH];
 unsigned char input_image_testErosion[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char input_image_ErosionMatch[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char modified_greyScale[BMP_WIDTH][BMP_HEIGTH];
+unsigned char modified_eroded_image[BMP_WIDTH][BMP_HEIGTH];
 
 void testGrayScale()
 {
@@ -145,9 +146,11 @@ int testErosion()
             applyGreyScaleAndBlackAndWhite(&a);
         }
 
-        erode_image(modified_greyScale, modified_greyScale);
-
         convertTo3D(modified_greyScale, input_image_testErosion);
+
+        erode_image(modified_greyScale, modified_eroded_image);
+
+        convertTo3D(modified_eroded_image, input_image_testErosion);
 
         write_bitmap(input_image_testErosion, output_filepath);
 
@@ -180,11 +183,8 @@ int testErosion()
 int main()
 {
     testGrayScale();
-    // testBlackAndWhite();
-    // testErosion();
-    // test_medium();
-    // test_hard();
-    // test_impossible();
+    testBlackAndWhite();
+    testErosion();
 
     return 0;
 }

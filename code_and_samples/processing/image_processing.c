@@ -30,10 +30,10 @@ void printMemoryUsage()
     PROCESS_MEMORY_COUNTERS pmc;
     if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc)))
     {
-        printf("Peak Page File Bytes: %zu\n", pmc.PeakPagefileUsage);
-        printf("Peak Working Set Bytes: %zu\n", pmc.PeakWorkingSetSize);
-        printf("Page File Bytes: %zu\n", pmc.PagefileUsage);
-        printf("Working Set Bytes: %zu\n", pmc.WorkingSetSize);
+        printf("Peak Page File Bytes: %.2f MB\n", pmc.PeakPagefileUsage / (1024.0 * 1024.0));
+        printf("Peak Working Set Bytes: %.2f MB\n", pmc.PeakWorkingSetSize / (1024.0 * 1024.0));
+        printf("Page File Bytes: %.2f MB\n", pmc.PagefileUsage / (1024.0 * 1024.0));
+        printf("Working Set Bytes: %.2f MB\n", pmc.WorkingSetSize / (1024.0 * 1024.0));
     }
 }
 
@@ -95,7 +95,7 @@ void run(int argc, char **argv, int isTesting)
 
     // Checking that 2 arguments are passed
 
-    printf("Example program - 02132 - A1\n");
+    //printf("Example program - 02132 - A1\n");
 
     // Load image from file
     // Try reading the image until successful
