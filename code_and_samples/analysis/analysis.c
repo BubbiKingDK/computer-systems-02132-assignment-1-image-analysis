@@ -4,8 +4,8 @@
 
 void analysis_loop(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned char output_image[BMP_WIDTH][BMP_HEIGTH])
 {
-  //unsigned char(*current_image)[BMP_HEIGTH] = input_image;
-  //unsigned char(*next_image)[BMP_HEIGTH] = output_image;
+  // unsigned char(*current_image)[BMP_HEIGTH] = input_image;
+  // unsigned char(*next_image)[BMP_HEIGTH] = output_image;
 
   unsigned char *current_ptr = &input_image[0][0];
   unsigned char *next_ptr = &output_image[0][0];
@@ -15,30 +15,39 @@ void analysis_loop(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned ch
 
   while (eroded)
   {
-    if (count % 2 == 0 || count == 0)
+    eroded = erode_image(current_ptr, BMP_WIDTH, BMP_HEIGTH, next_ptr);
+    if (!eroded)
     {
-      eroded = erode_image(current_ptr, BMP_WIDTH,BMP_HEIGTH,next_ptr);
+      break;
+    }
+    count_cells(next_ptr, BMP_WIDTH, BMP_HEIGTH);
+    unsigned char *temp = current_ptr;
+    current_ptr = next_ptr;
+    next_ptr = temp;
+
+    /* if (count % 2 == 0 || count == 0)
+    {
+      eroded = erode_image(current_ptr, BMP_WIDTH, BMP_HEIGTH, next_ptr);
       if (!eroded)
       {
         break;
       }
-      count_cells(next_ptr,BMP_WIDTH,BMP_HEIGTH, current_ptr);
+      count_cells(next_ptr, BMP_WIDTH, BMP_HEIGTH, current_ptr);
     }
     else
     {
-      eroded = erode_image(next_ptr, BMP_WIDTH,BMP_HEIGTH,current_ptr);
+      eroded = erode_image(next_ptr, BMP_WIDTH, BMP_HEIGTH, current_ptr);
       if (!eroded)
       {
         break;
       }
-      count_cells(current_ptr, BMP_WIDTH,BMP_HEIGTH, next_ptr);
+      count_cells(current_ptr, BMP_WIDTH, BMP_HEIGTH, next_ptr);
     }
-    count++;
+    count++; */
   }
 
-  //printf("Times eroded: %d\n", count);
+  // printf("Times eroded: %d\n", count);
 
-  
   // Just for debugging
   /* if (count % 2 == 0 || count == 0)
   {
@@ -51,5 +60,3 @@ void analysis_loop(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned ch
     }
   } */
 }
-
-

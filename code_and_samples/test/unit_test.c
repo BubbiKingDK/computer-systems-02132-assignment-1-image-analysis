@@ -23,14 +23,14 @@
 // unsigned char input_image2[BMP_WIDTH][BMP_HEIGTH];
 // unsigned char modified_image2[BMP_WIDTH][BMP_HEIGTH];
 
-unsigned char input_image3[BMP_WIDTH][BMP_HEIGTH];
+/* unsigned char input_image3[BMP_WIDTH][BMP_HEIGTH];
 
 unsigned char modified_image3[BMP_WIDTH][BMP_HEIGTH];
 
 unsigned char input_image_testErosion[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char input_image_ErosionMatch[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char modified_greyScale[BMP_WIDTH][BMP_HEIGTH];
-unsigned char modified_eroded_image[BMP_WIDTH][BMP_HEIGTH];
+unsigned char modified_eroded_image[BMP_WIDTH][BMP_HEIGTH]; */
 
 void testGrayScale()
 {
@@ -191,12 +191,9 @@ void testFindCell()
         {0, 255, 255, 255, 0},
         {0, 0, 255, 0, 0}};
 
-    unsigned char modified_image[5][5];
-
     unsigned char *input_ptr = &input_image[0][0];
-    unsigned char *modified_ptr = &modified_image[0][0];
 
-    count_cells(input_ptr, 5, 5, modified_ptr);
+    count_cells(input_ptr, 5, 5);
 
     unsigned char expected_image[5][5] = {0};
 
@@ -204,15 +201,15 @@ void testFindCell()
     {
         for (int j = 0; j < 5; j++)
         {
-            if (modified_ptr[i * 5 + j] != expected_image[i][j])
+            if (input_ptr[i * 5 + j] != expected_image[i][j])
             {
-                printf("Find cells test failed!\n");
+                printf("Find cells test step 1 failed!\n");
                 return;
             }
         }
     }
-    printf("Find cells test haha");
-/*         unsigned char input_image_2[13][13];
+
+    unsigned char input_image_2[13][13];
     unsigned char expected_image_2[13][13];
     for (int i = 0; i < 13; i++)
     {
@@ -223,28 +220,23 @@ void testFindCell()
         }
     }
 
-    unsigned char modified_image_2[13][13];
-
     unsigned char *input_ptr_2 = &input_image_2[0][0];
-    unsigned char *modified_ptr_2 = &modified_image_2[0][0];
 
-    count_cells(input_ptr, 5, 5, modified_ptr);
+    count_cells(input_ptr_2, 13, 13);
 
     for (int i = 0; i < 13; i++)
     {
         for (int j = 0; j < 13; j++)
         {
-            if (modified_ptr_2[i * 13 + j] != expected_image_2[i][j])
+            if (input_ptr_2[i * 13 + j] != expected_image_2[i][j])
             {
-                printf("Find cells test failed! ???!!\n");
+                printf("Find cells test step 2 failed!\n");
                 return;
             }
         }
     }
-    printf("Find cells test succeeded!\n"); */
+    printf("Find cells test succeeded!\n");
 }
-
-
 
 /*
 int testErosion()

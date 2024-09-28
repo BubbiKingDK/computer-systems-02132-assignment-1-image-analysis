@@ -57,7 +57,7 @@ void find_cell(unsigned char *current_ptr, int width, int height, int centerX, i
   }
 }
 
-void count_cells(unsigned char *current_ptr, int width, int height, unsigned char *next_ptr)
+void count_cells(unsigned char *current_ptr, int width, int height)
 {
   for (int i = 0; i < width; i++)
   {
@@ -66,7 +66,7 @@ void count_cells(unsigned char *current_ptr, int width, int height, unsigned cha
       find_cell(current_ptr, width, height, i, j);
     }
   }
-  unsigned char *temp = current_ptr;
+  /* unsigned char *temp = current_ptr;
   current_ptr = next_ptr;
-  next_ptr = temp;
+  next_ptr = temp; */
 }
