@@ -39,9 +39,11 @@ void printMemoryUsage()
 
 void image_processing()
 {
-    grey_scale(input_image, modified_image);
+    unsigned char *input_ptr = &input_image[0][0][0];
+    unsigned char *modified_ptr = &modified_image[0][0];
+    grey_scale(input_ptr,BMP_WIDTH,BMP_HEIGTH,BMP_CHANNELS, modified_ptr);
 
-    binary_threshold(modified_image, modified_image);
+    binary_threshold(modified_ptr,BMP_WIDTH,BMP_HEIGTH);
     //convertTo3D(modified_image, output_image);
     //write_bitmap(output_image, "b_and_w.bmp");
     

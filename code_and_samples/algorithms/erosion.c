@@ -3,29 +3,29 @@
 
 #include "../cbmp.h"
 
-int erode_image(unsigned char current_image[BMP_WIDTH][BMP_HEIGTH], unsigned char next_image[BMP_WIDTH][BMP_HEIGTH])
+int erode_image(unsigned char *current_ptr, int width, int height, unsigned char *next_ptr)
 {
   int eroded = 0;
 
-  for (int x = 0; x < BMP_WIDTH; x++)
+  for (int x = 0; x < width; x++)
   {
-    for (int y = 0; y < BMP_HEIGTH; y++)
+    for (int y = 0; y < height; y++)
     {
-      if (current_image[x][y] != 255 || x - 1 < 0 || y - 1 < 0 || x + 1 >= BMP_WIDTH || y + 1 >= BMP_HEIGTH)
+      if (current_ptr[x * height + y] != 255 || x - 1 < 0 || y - 1 < 0 || x + 1 >= width || y + 1 >= height)
       {
-        next_image[x][y] = 0;
+        next_ptr[x * height + y] = 0;
         continue;
       }
-      if (current_image[x - 1][y] && // Top
-          current_image[x + 1][y] && // Bund
-          current_image[x][y - 1] && // Venstre
-          current_image[x][y + 1])   // Højre
+      if (current_ptr[(x - 1) * height + y] && // Top
+          current_ptr[(x + 1) * height + y] && // Bund
+          current_ptr[x * height + (y - 1)] && // Venstre
+          current_ptr[x * height + (y + 1)])   // Højre
       {
-        next_image[x][y] = 255;
+        next_ptr[x * height + y] = 255;
       }
       else
       {
-        next_image[x][y] = 0;
+        next_ptr[x * height + y] = 0;
         eroded = 1;
       }
     }

@@ -25,7 +25,7 @@ void convolution(int kernel[KERNEL_SIZE][KERNEL_SIZE], unsigned char input[BMP_W
   {
     for (int j = 0; j < BMP_HEIGTH; j++)
     {
-      if (!getPixelValue(input, i, j))
+      if (!getPixelValue2(input, i, j))
       {
         continue;
       }
@@ -43,7 +43,7 @@ void convolution(int kernel[KERNEL_SIZE][KERNEL_SIZE], unsigned char input[BMP_W
         for (int n = -radius; n <= radius; n++)
         {
           // Hent pixelværdi med grænsekontrol
-          unsigned char pixelvalue = getPixelValue(input, i + m, j + n);
+          unsigned char pixelvalue = getPixelValue2(input, i + m, j + n);
           sum += pixelvalue * kernel[m + radius][n + radius];
         }
       }

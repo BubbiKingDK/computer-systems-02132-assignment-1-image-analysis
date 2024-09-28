@@ -11,16 +11,17 @@
 #include "../algorithms/erosion.c"
 #include "../helper_functions/convert_array.c"
 #include "../helper_functions/pixel_value.c"
-
+#include "../algorithms/detect_cells.c"
+#include "../algorithms/detect_cells.h"
 
 #define WIDTH 950
 #define treshold 90
 
-unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
-unsigned char modified_image[BMP_WIDTH][BMP_HEIGTH];
+// unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
+// unsigned char modified_image[BMP_WIDTH][BMP_HEIGTH];
 
-unsigned char input_image2[BMP_WIDTH][BMP_HEIGTH];
-unsigned char modified_image2[BMP_WIDTH][BMP_HEIGTH];
+// unsigned char input_image2[BMP_WIDTH][BMP_HEIGTH];
+// unsigned char modified_image2[BMP_WIDTH][BMP_HEIGTH];
 
 unsigned char input_image3[BMP_WIDTH][BMP_HEIGTH];
 
@@ -32,6 +33,37 @@ unsigned char modified_greyScale[BMP_WIDTH][BMP_HEIGTH];
 unsigned char modified_eroded_image[BMP_WIDTH][BMP_HEIGTH];
 
 void testGrayScale()
+{
+    unsigned char input_image[5][5][3];
+    unsigned char modified_image[5][5];
+
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            input_image[i][j][0] = 100;
+            input_image[i][j][1] = 150;
+            input_image[i][j][2] = 200;
+        }
+    }
+    unsigned char *input_ptr = &input_image[0][0][0];
+    unsigned char *grey_scale_ptr = &modified_image[0][0];
+    grey_scale(input_ptr, 5, 5, 3, grey_scale_ptr);
+
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            if (grey_scale_ptr[i * 5 + j] != (100 + 150 + 200) / 3)
+            {
+                printf("GrayScale test failed!\n");
+                return;
+            }
+        }
+    }
+    printf("GrayScale test succeeded!\n");
+}
+/* void testGrayScale()
 {
     for (int i = 0; i < BMP_WIDTH; i++)
     {
@@ -56,39 +88,165 @@ void testGrayScale()
         }
     }
     printf("GrayScale test succeeded!\n");
-}
+} */
 
 void testBlackAndWhite()
 {
-    for (int x = 0; x < BMP_WIDTH; x++)
+    unsigned char image[5][5];
+    unsigned char *image_ptr = &image[0][0];
+
+    for (int x = 0; x < 5; x++)
     {
-        for (int y = 0; y < BMP_HEIGTH; y++)
+        for (int y = 0; y < 5; y++)
         {
-            input_image2[x][y] = 100;
-        }
-    }
-    binary_threshold(input_image2, modified_image2);
-    for (int x = 0; x < BMP_WIDTH; x++)
-    {
-        for (int y = 0; y < BMP_HEIGTH; y++)
-        {
-            if (modified_image2[x][y] != (input_image2[x][y] >= treshold ? 255 : 0))
+            if (x % 2 == 0)
             {
-                printf("Black and White test failed!\n");
-                return;
+                image_ptr[x * 5 + y] = 100;
+            }
+            else
+            {
+                image_ptr[x * 5 + y] = 80;
             }
         }
     }
-    printf("Black and White test succeeded!\n");
-}
 
+    binary_threshold(image_ptr, 5, 5);
+
+    for (int x = 0; x < 5; x++)
+    {
+        for (int y = 0; y < 5; y++)
+        {
+            if (x % 2 == 0)
+            {
+                if (image_ptr[x * 5 + y] != 255)
+                {
+                    printf("Binary threshold test failed!\n");
+                    return;
+                }
+            }
+            else
+            {
+                if (image_ptr[x * 5 + y] != 0)
+                {
+                    printf("Binary threshold test failed!\n");
+                    return;
+                }
+            }
+        }
+    }
+    printf("Binary threshold test succeeded!\n");
+}
+/*
 void applyGreyScaleAndBlackAndWhite(int *a)
 {
     grey_scale(input_image_testErosion, modified_greyScale);
     binary_threshold(modified_greyScale, modified_greyScale);
     *a = 0;
 }
+*/
 
+void testErosion()
+{
+    unsigned char input_image[5][5] = {
+        {0, 0, 255, 0, 0},
+        {0, 255, 255, 255, 0},
+        {255, 255, 255, 255, 255},
+        {0, 255, 255, 255, 0},
+        {0, 0, 255, 0, 0}};
+
+    unsigned char modified_image[5][5];
+
+    unsigned char *input_ptr = &input_image[0][0];
+    unsigned char *modified_ptr = &modified_image[0][0];
+
+    erode_image(input_ptr, 5, 5, modified_ptr);
+
+    unsigned char expected_image[5][5] = {
+        {0, 0, 0, 0, 0},
+        {0, 0, 255, 0, 0},
+        {0, 255, 255, 255, 0},
+        {0, 0, 255, 0, 0},
+        {0, 0, 0, 0, 0}};
+
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            if (modified_ptr[i * 5 + j] != expected_image[i][j])
+            {
+                printf("Erosion test failed!\n");
+                return;
+            }
+        }
+    }
+    printf("Erosion test succeeded!\n");
+}
+
+void testFindCell()
+{
+    unsigned char input_image[5][5] = {
+        {0, 0, 255, 0, 0},
+        {0, 255, 255, 255, 0},
+        {255, 255, 255, 255, 255},
+        {0, 255, 255, 255, 0},
+        {0, 0, 255, 0, 0}};
+
+    unsigned char modified_image[5][5];
+
+    unsigned char *input_ptr = &input_image[0][0];
+    unsigned char *modified_ptr = &modified_image[0][0];
+
+    count_cells(input_ptr, 5, 5, modified_ptr);
+
+    unsigned char expected_image[5][5] = {0};
+
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            if (modified_ptr[i * 5 + j] != expected_image[i][j])
+            {
+                printf("Find cells test failed!\n");
+                return;
+            }
+        }
+    }
+    printf("Find cells test haha");
+/*         unsigned char input_image_2[13][13];
+    unsigned char expected_image_2[13][13];
+    for (int i = 0; i < 13; i++)
+    {
+        for (int j = 0; j < 13; j++)
+        {
+            input_image_2[i][j] = 255;
+            expected_image_2[i][j] = 255;
+        }
+    }
+
+    unsigned char modified_image_2[13][13];
+
+    unsigned char *input_ptr_2 = &input_image_2[0][0];
+    unsigned char *modified_ptr_2 = &modified_image_2[0][0];
+
+    count_cells(input_ptr, 5, 5, modified_ptr);
+
+    for (int i = 0; i < 13; i++)
+    {
+        for (int j = 0; j < 13; j++)
+        {
+            if (modified_ptr_2[i * 13 + j] != expected_image_2[i][j])
+            {
+                printf("Find cells test failed! ???!!\n");
+                return;
+            }
+        }
+    }
+    printf("Find cells test succeeded!\n"); */
+}
+
+
+
+/*
 int testErosion()
 {
     // Define the folder and file names
@@ -179,12 +337,14 @@ int testErosion()
     printf("Erosion test succeeded!\n");
     return 1;
 }
+ */
 
 int main()
 {
     testGrayScale();
     testBlackAndWhite();
     testErosion();
+    testFindCell();
 
     return 0;
 }

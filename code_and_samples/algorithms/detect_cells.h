@@ -12,8 +12,8 @@ typedef struct
 
 Coordinate coordinates[MAX_COORDINATES];
 
-void find_cell(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], int centerX, int centerY);
-void count_cells(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned char output_image[BMP_WIDTH][BMP_HEIGTH]);
+void find_cell(unsigned char *current_ptr, int width, int height, int centerX, int centerY);
+void count_cells(unsigned char *current_ptr, int width, int height, unsigned char *next_ptr);
 void resetCoordinates();
 
 #endif

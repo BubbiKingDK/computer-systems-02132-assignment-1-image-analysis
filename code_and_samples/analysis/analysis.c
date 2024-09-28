@@ -4,8 +4,11 @@
 
 void analysis_loop(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned char output_image[BMP_WIDTH][BMP_HEIGTH])
 {
-  unsigned char(*current_image)[BMP_HEIGTH] = input_image;
-  unsigned char(*next_image)[BMP_HEIGTH] = output_image;
+  //unsigned char(*current_image)[BMP_HEIGTH] = input_image;
+  //unsigned char(*next_image)[BMP_HEIGTH] = output_image;
+
+  unsigned char *current_ptr = &input_image[0][0];
+  unsigned char *next_ptr = &output_image[0][0];
 
   int count = 0;
   int eroded = 1;
@@ -14,21 +17,21 @@ void analysis_loop(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned ch
   {
     if (count % 2 == 0 || count == 0)
     {
-      eroded = erode_image(current_image, next_image);
+      eroded = erode_image(current_ptr, BMP_WIDTH,BMP_HEIGTH,next_ptr);
       if (!eroded)
       {
         break;
       }
-      count_cells(next_image, current_image);
+      count_cells(next_ptr,BMP_WIDTH,BMP_HEIGTH, current_ptr);
     }
     else
     {
-      eroded = erode_image(next_image, current_image);
+      eroded = erode_image(next_ptr, BMP_WIDTH,BMP_HEIGTH,current_ptr);
       if (!eroded)
       {
         break;
       }
-      count_cells(current_image, next_image);
+      count_cells(current_ptr, BMP_WIDTH,BMP_HEIGTH, next_ptr);
     }
     count++;
   }
@@ -37,7 +40,7 @@ void analysis_loop(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned ch
 
   
   // Just for debugging
-  if (count % 2 == 0 || count == 0)
+  /* if (count % 2 == 0 || count == 0)
   {
     for (int i = 0; i < BMP_WIDTH; i++)
     {
@@ -46,7 +49,7 @@ void analysis_loop(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned ch
         output_image[i][j] = input_image[i][j];
       }
     }
-  }
+  } */
 }
 
 

@@ -23,9 +23,9 @@ void resetCoordinates()
   coordinates_count = 0;
 }
 
-void find_cell(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], int centerX, int centerY)
+void find_cell(unsigned char *current_ptr, int width, int height, int centerX, int centerY)
 {
-  if (!input_image[centerX][centerY])
+  if (!current_ptr[centerX * height + centerY])
   {
     return;
   }
@@ -33,7 +33,7 @@ void find_cell(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], int centerX, in
   int radius = 6;
   for (int i = -radius; i <= radius; i++)
   {
-    if (getPixelValue(input_image, centerX - radius, centerY + i) || getPixelValue(input_image, centerX + radius, centerY + i) || getPixelValue(input_image, centerX + i, centerY - radius) || getPixelValue(input_image, centerX + i, centerY + radius))
+    if (getPixelValue(current_ptr, width, height, centerX - radius, centerY + i) || getPixelValue(current_ptr, width, height, centerX + radius, centerY + i) || getPixelValue(current_ptr, width, height, centerX + i, centerY - radius) || getPixelValue(current_ptr, width, height, centerX + i, centerY + radius))
     {
       return;
     }
@@ -49,24 +49,24 @@ void find_cell(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], int centerX, in
       int x = centerX + i;
       int y = centerY + j;
 
-      if (x >= 0 && x < BMP_WIDTH && y >= 0 && y < BMP_HEIGTH)
+      if (x >= 0 && x < width && y >= 0 && y < height)
       {
-        input_image[x][y] = 0;
+        current_ptr[x * height + y] = 0;
       }
     }
   }
 }
 
-void count_cells(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned char output_image[BMP_WIDTH][BMP_HEIGTH])
+void count_cells(unsigned char *current_ptr, int width, int height, unsigned char *next_ptr)
 {
-  for (int i = 0; i < BMP_WIDTH; i++)
+  for (int i = 0; i < width; i++)
   {
-    for (int j = 0; j < BMP_HEIGTH; j++)
+    for (int j = 0; j < height; j++)
     {
-      find_cell(input_image, i, j);
+      find_cell(current_ptr, width, height, i, j);
     }
   }
-  unsigned char(*temp)[BMP_HEIGTH] = input_image;
-  input_image = output_image;
-  output_image = temp;
+  unsigned char *temp = current_ptr;
+  current_ptr = next_ptr;
+  next_ptr = temp;
 }
