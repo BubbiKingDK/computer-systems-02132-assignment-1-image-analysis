@@ -8,6 +8,8 @@
         "math.h": "c",
         "pixel_value.h": "c",
         "psapi.h": "c",
-        "*.rh": "c"
+        "*.rh": "c",
+        "string.h": "c",
+        "windows.h": "c"
     }
 }

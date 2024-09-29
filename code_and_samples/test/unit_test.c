@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../cbmp.h"
 #include <limits.h>
 #include <math.h>
 #include <windows.h>
@@ -13,9 +12,12 @@
 #include "../helper_functions/pixel_value.c"
 #include "../algorithms/detect_cells.c"
 #include "../algorithms/detect_cells.h"
+#include "unit_test_styling.c"
 
 #define WIDTH 950
 #define treshold 90
+
+int read_correct;
 
 // unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 // unsigned char modified_image[BMP_WIDTH][BMP_HEIGTH];
@@ -32,7 +34,7 @@ unsigned char input_image_ErosionMatch[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char modified_greyScale[BMP_WIDTH][BMP_HEIGTH];
 unsigned char modified_eroded_image[BMP_WIDTH][BMP_HEIGTH]; */
 
-void testGrayScale()
+int testGrayScale(char *failure_message)
 {
     unsigned char input_image[5][5][3];
     unsigned char modified_image[5][5];
@@ -56,12 +58,14 @@ void testGrayScale()
         {
             if (grey_scale_ptr[i * 5 + j] != (100 + 150 + 200) / 3)
             {
-                printf("GrayScale test failed!\n");
-                return;
+                // printf("GrayScale test failed!\n");
+                sprintf(failure_message, "Expected 150, but was %d", grey_scale_ptr[i * 5 + j]);
+                return 0;
             }
         }
     }
-    printf("GrayScale test succeeded!\n");
+    // printf("GrayScale test succeeded!\n");
+    return 1;
 }
 /* void testGrayScale()
 {
@@ -90,7 +94,7 @@ void testGrayScale()
     printf("GrayScale test succeeded!\n");
 } */
 
-void testBlackAndWhite()
+int testBlackAndWhite(char *failure_message)
 {
     unsigned char image[5][5];
     unsigned char *image_ptr = &image[0][0];
@@ -120,21 +124,24 @@ void testBlackAndWhite()
             {
                 if (image_ptr[x * 5 + y] != 255)
                 {
-                    printf("Binary threshold test failed!\n");
-                    return;
+                    //printf("Binary threshold test failed!\n");
+                    sprintf(failure_message, "Expected 255, but was %d", image_ptr[x * 5 + y]);
+                    return 0;
                 }
             }
             else
             {
                 if (image_ptr[x * 5 + y] != 0)
                 {
-                    printf("Binary threshold test failed!\n");
-                    return;
+                    //printf("Binary threshold test failed!\n");
+                    sprintf(failure_message, "Expected 0, but was %d", image_ptr[x * 5 + y]);
+                    return 0;
                 }
             }
         }
     }
-    printf("Binary threshold test succeeded!\n");
+    //printf(RED "Binary threshold test succeeded!\n" RESET);
+    return 1;
 }
 /*
 void applyGreyScaleAndBlackAndWhite(int *a)
@@ -145,7 +152,7 @@ void applyGreyScaleAndBlackAndWhite(int *a)
 }
 */
 
-void testErosion()
+int testErosion(char *failure_message)
 {
     unsigned char input_image[5][5] = {
         {0, 0, 255, 0, 0},
@@ -174,15 +181,17 @@ void testErosion()
         {
             if (modified_ptr[i * 5 + j] != expected_image[i][j])
             {
-                printf("Erosion test failed!\n");
-                return;
+                //printf("Erosion test failed!\n");
+                sprintf(failure_message, "Expected %d, but was %d", expected_image[i][j], modified_ptr[i * 5 + j]);
+                return 0;
             }
         }
     }
-    printf("Erosion test succeeded!\n");
+    return 1;
+    //printf("Erosion test succeeded!\n");
 }
 
-void testFindCell()
+int testFindCell(char *failure_message)
 {
     unsigned char input_image[5][5] = {
         {0, 0, 255, 0, 0},
@@ -203,8 +212,9 @@ void testFindCell()
         {
             if (input_ptr[i * 5 + j] != expected_image[i][j])
             {
-                printf("Find cells test step 1 failed!\n");
-                return;
+                //printf("Find cells test step 1 failed!\n");
+                sprintf(failure_message, "Expected %d, but was %d", expected_image[i][j], input_ptr[i * 5 + j]);
+                return 0;
             }
         }
     }
@@ -230,12 +240,14 @@ void testFindCell()
         {
             if (input_ptr_2[i * 13 + j] != expected_image_2[i][j])
             {
-                printf("Find cells test step 2 failed!\n");
-                return;
+                //printf("Find cells test step 2 failed!\n");
+                sprintf(failure_message, "Expected %d, but was %d", expected_image[i][j], input_ptr[i * 13 + j]);
+                return 0;
             }
         }
     }
-    printf("Find cells test succeeded!\n");
+    return 1;
+    //printf("Find cells test succeeded!\n");
 }
 
 /*
@@ -333,10 +345,40 @@ int testErosion()
 
 int main()
 {
-    testGrayScale();
+    TestBlueprint blueprint = {0, 0, 0, {""}, {""}}; // Initialiser testsuite
+
+    int total_tests = 4; // Angiv antal tests
+
+    char failure_message[256]; // Buffer til fejlmeddelelse
+
+    // Kør tests
+    printf("\n");
+    run_test(&blueprint, "Grey Scale Test", testGrayScale, failure_message, total_tests);
+    run_test(&blueprint, "Binary Treshold Test", testBlackAndWhite, failure_message, total_tests);
+    run_test(&blueprint, "Erosion Test", testErosion, failure_message, total_tests);
+    run_test(&blueprint, "Find Cell Test", testFindCell, failure_message, total_tests);
+
+/*     run_test(&blueprint, "Sample Test 2", sample_test_fail, failure_message);
+    run_test(&blueprint, "Sample Test 3", sample_test_success, failure_message);
+    run_test(&blueprint, "Sample Test 4", sample_test_success, failure_message); */
+
+    // Udskriv afsluttende progress bar
+    print_progress_bar(total_tests, blueprint.test_passed + blueprint.test_failed, blueprint.test_passed, blueprint.test_failed);
+
+    if (blueprint.test_failed == 0)
+    {
+        printf(GREEN "\n\nAll tests passed successfully!" RESET);
+    }
+    else
+    {
+        printf(RED "\n\nSome tests failed." RESET);
+    }
+
+    print_test_results(blueprint);
+    /* testGrayScale();
     testBlackAndWhite();
     testErosion();
-    testFindCell();
+    testFindCell(); */
 
     return 0;
 }
