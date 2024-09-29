@@ -20,10 +20,10 @@
 int read_correct = 0;
 
 unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
-//unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
+// unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char modified_image[BMP_WIDTH][BMP_HEIGTH];
 unsigned char analysis_image[BMP_WIDTH][BMP_HEIGTH] = {0};
-//unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH];
+// unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH];
 
 void printMemoryUsage()
 {
@@ -41,21 +41,21 @@ void image_processing()
 {
     unsigned char *input_ptr = &input_image[0][0][0];
     unsigned char *modified_ptr = &modified_image[0][0];
-    grey_scale(input_ptr,BMP_WIDTH,BMP_HEIGTH,BMP_CHANNELS, modified_ptr);
+    grey_scale(input_ptr, BMP_WIDTH, BMP_HEIGTH, BMP_CHANNELS, modified_ptr);
 
-    binary_threshold(modified_ptr,BMP_WIDTH,BMP_HEIGTH);
-    //convertTo3D(modified_image, output_image);
-    //write_bitmap(output_image, "b_and_w.bmp");
-    
+    binary_threshold(modified_ptr, BMP_WIDTH, BMP_HEIGTH);
+    // convertTo3D(modified_image, output_image);
+    // write_bitmap(output_image, "b_and_w.bmp");
+
     create_kernel(kernel);
-
     convolution(kernel, modified_image, analysis_image);
 
-    //convertToUnsignedChar(analysis_image, modified_image);
-    //convertTo3D(modified_image, input_image);
-    //write_bitmap(input_image, "convulted_image.bmp");
+    // convertToUnsignedChar(analysis_image, modified_image);
+    // convertTo3D(modified_image, input_image);
+    // write_bitmap(input_image, "convulted_image.bmp");
 
     analysis_loop(analysis_image, modified_image);
+    //analysis_loop(modified_image, analysis_image);
 }
 
 void testing(char *filepath)
@@ -67,10 +67,10 @@ void testing(char *filepath)
     read_bitmap(filepath, input_image);
 
     image_processing();
-    
-    //printf("Cells found: %d\n", coordinates_count);
-    
-    //printMemoryUsage();
+
+    // printf("Cells found: %d\n", coordinates_count);
+
+    // printMemoryUsage();
 }
 
 void run(int argc, char **argv, int isTesting)
@@ -97,7 +97,7 @@ void run(int argc, char **argv, int isTesting)
 
     // Checking that 2 arguments are passed
 
-    //printf("Example program - 02132 - A1\n");
+    // printf("Example program - 02132 - A1\n");
 
     // Load image from file
     // Try reading the image until successful

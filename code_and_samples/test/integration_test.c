@@ -38,6 +38,7 @@ void test_easy()
 
     for (int i = 0; i < 10; i++)
     {
+        read_correct = 1;
         char input_filepath_easy[1024];
         snprintf(input_filepath_easy, sizeof(input_filepath_easy), "%s/%s/%s", sample_folder, easy_folder, input_filenames_easy[i]);
 
@@ -56,21 +57,28 @@ void test_easy()
         char path[1024]; // Tildel en passende størrelse til 'path'
         snprintf(path, sizeof(path), "test/output/easy/easy%d.bmp", i + 1);
         write_bitmap(input_image, path);
-
         end = clock();
 
-        cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-        printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
+        if (read_correct)
+        {
+            cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+            printf("%-10d %-10d %-10.3f\n", i + 1, coordinates_count, cpu_time_used);
+            total_time += cpu_time_used;
+        }
+        else
+        {
+            printf("%-10d %-10d %-10s\n", i + 1, coordinates_count, "error");
+            pic_count--;
+        }
 
         total_cells += coordinates_count;
-        total_time += cpu_time_used;
     }
     int average_cells = total_cells / 10;
     double percentage_found = ((double)average_cells / TOTAL_CELLS) * 100;
     double average_time = (double)(total_time / pic_count);
 
     printf("---------------------------\n");
-    printf("Average time %.2f s\n", average_time);
+    printf("Average time %.3f s\n", average_time);
     printf("Average found cells: %d\n", average_cells);
     printf("Percentage of total cells: %.1f%%\n", percentage_found);
     printf("---------------------------\n");
@@ -106,6 +114,7 @@ void test_medium()
 
     for (int i = 0; i < 10; i++)
     {
+        read_correct = 1;
         char input_filepath_medium[1024];
         snprintf(input_filepath_medium, sizeof(input_filepath_medium), "%s/%s/%s", sample_folder, medium_folder, input_filenames_medium[i]);
 
@@ -127,18 +136,26 @@ void test_medium()
 
         end = clock();
 
-        cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-        printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
+        if (read_correct)
+        {
+            cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+            printf("%-10d %-10d %-10.3f\n", i + 1, coordinates_count, cpu_time_used);
+            total_time += cpu_time_used;
+        }
+        else
+        {
+            printf("%-10d %-10d %-10s\n", i + 1, coordinates_count, "error");
+            pic_count--;
+        }
 
         total_cells += coordinates_count;
-        total_time += cpu_time_used;
     }
     int average_cells = total_cells / 10;
     double percentage_found = ((double)average_cells / TOTAL_CELLS) * 100;
     double average_time = (double)(total_time / pic_count);
 
     printf("---------------------------\n");
-    printf("Average time %.2f s\n", average_time);
+    printf("Average time %.3f s\n", average_time);
     printf("Average found cells: %d\n", average_cells);
     printf("Percentage of total cells: %.1f%%\n", percentage_found);
     printf("---------------------------\n");
@@ -174,6 +191,7 @@ void test_hard()
 
     for (int i = 0; i < 10; i++)
     {
+        read_correct = 1;
         char input_filepath_hard[1024];
         snprintf(input_filepath_hard, sizeof(input_filepath_hard), "%s/%s/%s", sample_folder, hard_folder, input_filenames_hard[i]);
 
@@ -195,18 +213,26 @@ void test_hard()
 
         end = clock();
 
-        cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-        printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
+        if (read_correct)
+        {
+            cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+            printf("%-10d %-10d %-10.3f\n", i + 1, coordinates_count, cpu_time_used);
+            total_time += cpu_time_used;
+        }
+        else
+        {
+            printf("%-10d %-10d %-10s\n", i + 1, coordinates_count, "error");
+            pic_count--;
+        }
 
         total_cells += coordinates_count;
-        total_time += cpu_time_used;
     }
     int average_cells = total_cells / 10;
     double percentage_found = ((double)average_cells / TOTAL_CELLS) * 100;
     double average_time = (double)(total_time / pic_count);
 
     printf("---------------------------\n");
-    printf("Average time %.2f s\n", average_time);
+    printf("Average time %.3f s\n", average_time);
     printf("Average found cells: %d\n", average_cells);
     printf("Percentage of total cells: %.1f%%\n", percentage_found);
     printf("---------------------------\n");
@@ -237,6 +263,7 @@ void test_impossible()
 
     for (int i = 0; i < 5; i++)
     {
+        read_correct = 1;
         char input_filepath_impossible[1024];
         snprintf(input_filepath_impossible, sizeof(input_filepath_impossible), "%s/%s/%s", sample_folder, impossible_folder, input_filenames_impossible[i]);
 
@@ -257,18 +284,26 @@ void test_impossible()
         write_bitmap(input_image, path);
         end = clock();
 
-        cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-        printf("%-10d %-10d %-10.2f\n", i + 1, coordinates_count, cpu_time_used);
+        if (read_correct)
+        {
+            cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+            printf("%-10d %-10d %-10.3f\n", i + 1, coordinates_count, cpu_time_used);
+            total_time += cpu_time_used;
+        }
+        else
+        {
+            printf("%-10d %-10d %-10s\n", i + 1, coordinates_count, "error");
+            pic_count--;
+        }
 
         total_cells += coordinates_count;
-        total_time += cpu_time_used;
     }
     int average_cells = total_cells / 5;
     double percentage_found = ((double)average_cells / TOTAL_CELLS) * 100;
     double average_time = (double)(total_time / pic_count);
 
     printf("---------------------------\n");
-    printf("Average time %.2f s\n", average_time);
+    printf("Average time %.3f s\n", average_time);
     printf("Average found cells: %d\n", average_cells);
     printf("Percentage of total cells: %.1f%%\n", percentage_found);
     printf("---------------------------\n");

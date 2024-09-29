@@ -40,7 +40,7 @@ void find_cell(unsigned char *current_ptr, int width, int height, int centerX, i
   }
 
   addCoordinate(centerX, centerY);
-  // printf("Found cell at (%d, %d)\n", centerX, centerY);
+  //printf("(%d, %d)", centerX, centerY);
 
   for (int i = -radius; i <= radius; i++)
   {
