@@ -1,7 +1,6 @@
 // This file contains method for convolution
 #include <stdlib.h>
 #include <stdio.h>
-// #include "../cbmp.h"
 #include "../helper_functions/pixel_value.h"
 
 void convolution(int *kernel, int kernel_size, unsigned char *input, int width, int height, unsigned char *output)
@@ -49,7 +48,7 @@ void convolution(int *kernel, int kernel_size, unsigned char *input, int width, 
       // Normaliser og begræns outputværdi
       if (kernel_sum != 0)
       {
-        sum /= abs(kernel_sum); // Normalisering af summen
+        sum /= abs(kernel_sum);
       }
 
       int threshold = (int)(kernel_sum * temp);
@@ -70,10 +69,7 @@ void convolution(int *kernel, int kernel_size, unsigned char *input, int width, 
             // Sørg for, at vi holder os inden for billedets grænser
             if (i + m >= 0 && i + m < width && j + n >= 0 && j + n < height)
             {
-              // if (pow(m, 2) + pow(n, 2) < pow(radius / 6, 2))
-              //{
               output[(i + m) * height + (j + n)] = 255;
-              //}
             }
           }
         }

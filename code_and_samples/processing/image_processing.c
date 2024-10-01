@@ -24,11 +24,9 @@
 int read_correct = 0;
 
 unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
-// unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char modified_image[BMP_WIDTH][BMP_HEIGTH];
 unsigned char analysis_image[BMP_WIDTH][BMP_HEIGTH] = {0};
 int kernel[KERNEL_SIZE][KERNEL_SIZE];
-// unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH];
 
 void printMemoryUsage()
 {
@@ -48,41 +46,29 @@ void image_processing()
     unsigned char *modified_ptr = &modified_image[0][0];
     unsigned char *analysis_ptr = &analysis_image[0][0];
 
+    // Perform grayscale conversion
     grey_scale(input_ptr, BMP_WIDTH, BMP_HEIGTH, BMP_CHANNELS, modified_ptr);
 
+    // Apply binary thresholding
     binary_threshold(modified_ptr, BMP_WIDTH, BMP_HEIGTH);
-    // convertTo3D(modified_image, output_image);
-    // write_bitmap(output_image, "b_and_w.bmp");
 
+    // Create convolution kernel
     int *kernel_ptr = &kernel[0][0];
-
     create_kernel(kernel_ptr, KERNEL_SIZE, MAX_VALUE, MIN_VALUE);
 
+    // Perform convolution
     convolution(kernel_ptr, KERNEL_SIZE, modified_ptr, BMP_WIDTH, BMP_HEIGTH, analysis_ptr);
-    /* convertTo3D(analysis_image, input_image);
-    write_bitmap(input_image, "convulted_image1.bmp");
-    convertTo3D(modified_image, input_image);
-    write_bitmap(input_image, "modified_image1.bmp"); */
-    
-    // convertToUnsignedChar(analysis_image, modified_image);
 
+    // Analysis processing
     analysis_loop(analysis_image, modified_image);
-    //analysis_loop(modified_image, analysis_image);
 }
 
 void testing(char *filepath)
 {
     resetCoordinates();
-
     memset(analysis_image, 0, sizeof(analysis_image));
-
     read_bitmap(filepath, input_image);
-
     image_processing();
-
-    // printf("Cells found: %d\n", coordinates_count);
-
-    // printMemoryUsage();
 }
 
 void run(int argc, char **argv, int isTesting)
@@ -93,39 +79,22 @@ void run(int argc, char **argv, int isTesting)
         exit(1);
     }
 
+    // Test mode
     if (isTesting)
     {
         testing(argv[1]);
         return;
     }
 
-    clock_t start, end;
-    start = clock();
-
-    // argc counts how may arguments are passed
-    // argv[0] is a string with the name of the program
-    // argv[1] is the first command line argument (input image)
-    // argv[2] is the second command line argument (output image)
-
-    // Checking that 2 arguments are passed
-
-    // printf("Example program - 02132 - A1\n");
-
-    // Load image from file
-    // Try reading the image until successful
+    // Read input image and process it
     read_bitmap(argv[1], input_image);
-
     image_processing();
 
+    // Post-processing and output
     draw_x(input_image);
-
     write_bitmap(input_image, argv[2]);
 
+    // Print analysis results
     printf("Cells found: %d\n", coordinates_count);
-
     printMemoryUsage();
-
-    end = clock();
-    double time_spent = (double)(end - start) / CLOCKS_PER_SEC;
-    printf("Time taken: %f seconds\n", time_spent);
 }

@@ -1,15 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/* #define KERNEL_SIZE 25
-#define RADIUS 12
-#define MAX_VALUE 255
-#define MIN_VALUE -140
-
-int center = KERNEL_SIZE / 2;
-
-int kernel[KERNEL_SIZE][KERNEL_SIZE]; */
-
 void create_kernel(int *kernel_ptr, int kernel_size, int max_value, int min_value)
 {
   int radius = kernel_size / 2;
