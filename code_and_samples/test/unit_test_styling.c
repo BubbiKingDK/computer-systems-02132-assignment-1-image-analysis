@@ -26,17 +26,17 @@ void print_progress_bar(int current, int total, int passed, int failed) {
     }
 
     for (int i = 0; i < failed_width; ++i) {
-        printf(RED "=" RESET); 
+        printf(RED "=" RESET);
     }
     for (int i = passed_width + failed_width; i < bar_width; ++i) {
-        printf(" "); 
+        printf(" ");
     }
     printf("] %d/%d", current, total);
-    fflush(stdout);
 }
 
 void run_test(TestBlueprint *blueprint, const char *test_name, int (*test_func)(char *), char *failure_message, int total){
     blueprint->test_run++;
+
     int result = test_func(failure_message);
     if (result) {
         blueprint->test_passed++;

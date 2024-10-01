@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "../cbmp.h"
 
-unsigned char image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
+//unsigned char image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 
 void analysis_loop(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned char output_image[BMP_WIDTH][BMP_HEIGTH])
 {

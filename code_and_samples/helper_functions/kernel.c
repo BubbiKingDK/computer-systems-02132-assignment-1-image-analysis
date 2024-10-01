@@ -1,34 +1,35 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define KERNEL_SIZE 25
+/* #define KERNEL_SIZE 25
 #define RADIUS 12
 #define MAX_VALUE 255
 #define MIN_VALUE -140
 
 int center = KERNEL_SIZE / 2;
 
-int kernel[KERNEL_SIZE][KERNEL_SIZE];
+int kernel[KERNEL_SIZE][KERNEL_SIZE]; */
 
-
-void create_kernel(int kernel[KERNEL_SIZE][KERNEL_SIZE])
+void create_kernel(int *kernel_ptr, int kernel_size, int max_value, int min_value)
 {
-  for (int i = 0; i < KERNEL_SIZE; i++)
+  int radius = kernel_size / 2;
+
+  for (int i = 0; i < kernel_size; i++)
   {
-    for (int j = 0; j < KERNEL_SIZE; j++)
+    for (int j = 0; j < kernel_size; j++)
     {
       // Compute the distance from the center
-      double distance = sqrt((i - center) * (i - center) + (j - center) * (j - center));
+      double distance = sqrt((i - radius) * (i - radius) + (j - radius) * (j - radius));
 
       // Normalize the distance and calculate intensity
-      if (distance <= RADIUS)
+      if (distance <= radius)
       {
-        double normalized_distance = distance / RADIUS;
-        kernel[i][j] = (int)(MAX_VALUE * (1 - normalized_distance));
+        double normalized_distance = distance / radius;
+        kernel_ptr[i * kernel_size + j] = (int)(max_value * (1 - normalized_distance));
       }
       else
       {
-        kernel[i][j] = MIN_VALUE;
+        kernel_ptr[i * kernel_size + j] = min_value;
       }
     }
   }

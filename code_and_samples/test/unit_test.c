@@ -10,6 +10,7 @@
 #include "../algorithms/erosion.c"
 #include "../helper_functions/convert_array.c"
 #include "../helper_functions/pixel_value.c"
+#include "../helper_functions/kernel.c"
 #include "../algorithms/detect_cells.c"
 #include "../algorithms/detect_cells.h"
 #include "unit_test_styling.c"
@@ -124,7 +125,7 @@ int testBlackAndWhite(char *failure_message)
             {
                 if (image_ptr[x * 5 + y] != 255)
                 {
-                    //printf("Binary threshold test failed!\n");
+                    // printf("Binary threshold test failed!\n");
                     sprintf(failure_message, "Expected 255, but was %d", image_ptr[x * 5 + y]);
                     return 0;
                 }
@@ -133,14 +134,14 @@ int testBlackAndWhite(char *failure_message)
             {
                 if (image_ptr[x * 5 + y] != 0)
                 {
-                    //printf("Binary threshold test failed!\n");
+                    // printf("Binary threshold test failed!\n");
                     sprintf(failure_message, "Expected 0, but was %d", image_ptr[x * 5 + y]);
                     return 0;
                 }
             }
         }
     }
-    //printf(RED "Binary threshold test succeeded!\n" RESET);
+    // printf(RED "Binary threshold test succeeded!\n" RESET);
     return 1;
 }
 /*
@@ -181,14 +182,14 @@ int testErosion(char *failure_message)
         {
             if (modified_ptr[i * 5 + j] != expected_image[i][j])
             {
-                //printf("Erosion test failed!\n");
+                // printf("Erosion test failed!\n");
                 sprintf(failure_message, "Expected %d, but was %d", expected_image[i][j], modified_ptr[i * 5 + j]);
                 return 0;
             }
         }
     }
     return 1;
-    //printf("Erosion test succeeded!\n");
+    // printf("Erosion test succeeded!\n");
 }
 
 int testFindCell(char *failure_message)
@@ -212,7 +213,7 @@ int testFindCell(char *failure_message)
         {
             if (input_ptr[i * 5 + j] != expected_image[i][j])
             {
-                //printf("Find cells test step 1 failed!\n");
+                // printf("Find cells test step 1 failed!\n");
                 sprintf(failure_message, "Expected %d, but was %d", expected_image[i][j], input_ptr[i * 5 + j]);
                 return 0;
             }
@@ -240,14 +241,89 @@ int testFindCell(char *failure_message)
         {
             if (input_ptr_2[i * 13 + j] != expected_image_2[i][j])
             {
-                //printf("Find cells test step 2 failed!\n");
+                // printf("Find cells test step 2 failed!\n");
                 sprintf(failure_message, "Expected %d, but was %d", expected_image[i][j], input_ptr[i * 13 + j]);
                 return 0;
             }
         }
     }
     return 1;
-    //printf("Find cells test succeeded!\n");
+    // printf("Find cells test succeeded!\n");
+}
+
+int testConvolution(char *failure_message)
+{
+    int size = 5;
+    int max = 2;
+    int min = -5;
+
+    int kernel[size][size];
+    int *kernel_ptr = &kernel[0][0];
+
+    unsigned char image1[5][5] = {
+        {255, 255, 0, 255, 255},
+        {255, 0, 0, 0, 255},
+        {0, 0, 255, 0, 0},
+        {255, 0, 0, 0, 255},
+        {255, 255, 0, 255, 255}};
+
+    unsigned char *image_ptr1 = &image1[0][0];
+
+    unsigned char image2[5][5] = {
+        {0, 0, 0, 0, 0},
+        {0, 0, 255, 0, 0},
+        {0, 255, 255, 255, 0},
+        {0, 0, 255, 0, 0},
+        {0, 0, 0, 0, 0}};
+
+    unsigned char *image_ptr2 = &image2[0][0];
+
+    unsigned char output1[5][5] = {0};
+    unsigned char *output_ptr1 = &output1[0][0];
+
+    unsigned char output2[5][5] = {0};
+    unsigned char *output_ptr2 = &output2[0][0];
+
+    unsigned char expected1[5][5] = {0};
+
+    unsigned char expected2[5][5] = {
+        {0, 255, 255, 255, 0},
+        {0, 255, 255, 255, 0},
+        {0, 255, 255, 255, 0},
+        {0, 255, 255, 255, 0},
+        {0, 255, 255, 255, 0}};
+
+    create_kernel(kernel_ptr, size, max, min);
+
+    convolution(kernel_ptr, size, image_ptr1, 5, 5, output_ptr1);
+
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            if (output_ptr1[i * 5 + j] != expected1[i][j])
+            {
+                sprintf(failure_message, "Expected %d, but was %d", expected1[i][j], output_ptr1[i * 5 + j]);
+                return 0;
+            }
+        }
+    }
+
+    convolution(kernel_ptr, size, image_ptr2, 5, 5, output_ptr2);
+
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            if (output_ptr2[i * 5 + j] != expected2[i][j])
+            {
+                sprintf(failure_message, "Expecteded %d, but was %d", expected2[i][j], output_ptr2[i * 5 + j]);
+                return 0;
+            }
+        }
+    }
+    
+    return 1;
 }
 
 /*
@@ -347,7 +423,7 @@ int main()
 {
     TestBlueprint blueprint = {0, 0, 0, {""}, {""}}; // Initialiser testsuite
 
-    int total_tests = 4; // Angiv antal tests
+    int total_tests = 5; // Angiv antal tests
 
     char failure_message[256]; // Buffer til fejlmeddelelse
 
@@ -357,10 +433,11 @@ int main()
     run_test(&blueprint, "Binary Treshold Test", testBlackAndWhite, failure_message, total_tests);
     run_test(&blueprint, "Erosion Test", testErosion, failure_message, total_tests);
     run_test(&blueprint, "Find Cell Test", testFindCell, failure_message, total_tests);
+    run_test(&blueprint, "Convolution Test", testConvolution, failure_message, total_tests);
 
-/*     run_test(&blueprint, "Sample Test 2", sample_test_fail, failure_message);
-    run_test(&blueprint, "Sample Test 3", sample_test_success, failure_message);
-    run_test(&blueprint, "Sample Test 4", sample_test_success, failure_message); */
+    /*     run_test(&blueprint, "Sample Test 2", sample_test_fail, failure_message);
+        run_test(&blueprint, "Sample Test 3", sample_test_success, failure_message);
+        run_test(&blueprint, "Sample Test 4", sample_test_success, failure_message); */
 
     // Udskriv afsluttende progress bar
     print_progress_bar(total_tests, blueprint.test_passed + blueprint.test_failed, blueprint.test_passed, blueprint.test_failed);

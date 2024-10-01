@@ -17,12 +17,17 @@
 #include "../helper_functions/pixel_value.c"
 #include "../analysis/analysis.c"
 
+#define KERNEL_SIZE 25
+#define MAX_VALUE 255
+#define MIN_VALUE -140
+
 int read_correct = 0;
 
 unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 // unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char modified_image[BMP_WIDTH][BMP_HEIGTH];
 unsigned char analysis_image[BMP_WIDTH][BMP_HEIGTH] = {0};
+int kernel[KERNEL_SIZE][KERNEL_SIZE];
 // unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH];
 
 void printMemoryUsage()
@@ -41,18 +46,25 @@ void image_processing()
 {
     unsigned char *input_ptr = &input_image[0][0][0];
     unsigned char *modified_ptr = &modified_image[0][0];
+    unsigned char *analysis_ptr = &analysis_image[0][0];
+
     grey_scale(input_ptr, BMP_WIDTH, BMP_HEIGTH, BMP_CHANNELS, modified_ptr);
 
     binary_threshold(modified_ptr, BMP_WIDTH, BMP_HEIGTH);
     // convertTo3D(modified_image, output_image);
     // write_bitmap(output_image, "b_and_w.bmp");
 
-    create_kernel(kernel);
-    convolution(kernel, modified_image, analysis_image);
+    int *kernel_ptr = &kernel[0][0];
 
+    create_kernel(kernel_ptr, KERNEL_SIZE, MAX_VALUE, MIN_VALUE);
+
+    convolution(kernel_ptr, KERNEL_SIZE, modified_ptr, BMP_WIDTH, BMP_HEIGTH, analysis_ptr);
+    /* convertTo3D(analysis_image, input_image);
+    write_bitmap(input_image, "convulted_image1.bmp");
+    convertTo3D(modified_image, input_image);
+    write_bitmap(input_image, "modified_image1.bmp"); */
+    
     // convertToUnsignedChar(analysis_image, modified_image);
-    // convertTo3D(modified_image, input_image);
-    // write_bitmap(input_image, "convulted_image.bmp");
 
     analysis_loop(analysis_image, modified_image);
     //analysis_loop(modified_image, analysis_image);

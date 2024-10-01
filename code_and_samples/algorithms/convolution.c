@@ -1,36 +1,34 @@
 // This file contains method for convolution
 #include <stdlib.h>
 #include <stdio.h>
-#include "../cbmp.h"
+// #include "../cbmp.h"
 #include "../helper_functions/pixel_value.h"
 
-#define KERNEL_SIZE 25
-
-void convolution(int kernel[KERNEL_SIZE][KERNEL_SIZE], unsigned char input[BMP_WIDTH][BMP_HEIGTH], unsigned char output[BMP_WIDTH][BMP_HEIGTH])
+void convolution(int *kernel, int kernel_size, unsigned char *input, int width, int height, unsigned char *output)
 {
-  unsigned char radius = KERNEL_SIZE / 2;
+  unsigned char radius = kernel_size / 2;
   int kernel_sum = 0;
   double temp = 0.037;
 
   // Beregn summen af kernelværdierne
-  for (int i = 0; i < KERNEL_SIZE; i++)
+  for (int i = 0; i < kernel_size; i++)
   {
-    for (int j = 0; j < KERNEL_SIZE; j++)
+    for (int j = 0; j < kernel_size; j++)
     {
-      kernel_sum += kernel[i][j];
+      kernel_sum += kernel[i * kernel_size + j];
     }
   }
 
-  for (int i = 0; i < BMP_WIDTH; i++)
+  for (int i = 0; i < width; i++)
   {
-    for (int j = 0; j < BMP_HEIGTH; j++)
+    for (int j = 0; j < height; j++)
     {
-      if (!getPixelValue2(input, i, j))
+      if (!getPixelValue(input, width, height, i, j))
       {
         continue;
       }
 
-      if (output[i][j])
+      if (output[i * height + j])
       {
         continue;
       }
@@ -43,20 +41,20 @@ void convolution(int kernel[KERNEL_SIZE][KERNEL_SIZE], unsigned char input[BMP_W
         for (int n = -radius; n <= radius; n++)
         {
           // Hent pixelværdi med grænsekontrol
-          unsigned char pixelvalue = getPixelValue2(input, i + m, j + n);
-          sum += pixelvalue * kernel[m + radius][n + radius];
+          unsigned char pixelvalue = getPixelValue(input, width, height, i + m, j + n);
+          sum += pixelvalue * kernel[(m + radius) * kernel_size + (n + radius)];
         }
       }
 
       // Normaliser og begræns outputværdi
       if (kernel_sum != 0)
       {
-        sum /= kernel_sum; // Normalisering af summen
+        sum /= abs(kernel_sum); // Normalisering af summen
       }
 
       int threshold = (int)(kernel_sum * temp);
 
-      if ((i < 4 && i >= 0) || (i < BMP_WIDTH - 1 && i >= BMP_WIDTH - 5) || (j < 4 && j >= 0) || (j < BMP_HEIGTH - 1 && j >= BMP_HEIGTH - 5))
+      if ((i < 4 && i >= 0) || (i < width - 1 && i >= height - 5) || (j < 4 && j >= 0) || (j < height - 1 && j >= width - 5))
       {
         double temp = 0.7;
         threshold = (int)(threshold * temp);
@@ -70,11 +68,11 @@ void convolution(int kernel[KERNEL_SIZE][KERNEL_SIZE], unsigned char input[BMP_W
           for (int n = -1; n <= 1; n++)
           {
             // Sørg for, at vi holder os inden for billedets grænser
-            if (i + m >= 0 && i + m < BMP_WIDTH && j + n >= 0 && j + n < BMP_HEIGTH)
+            if (i + m >= 0 && i + m < width && j + n >= 0 && j + n < height)
             {
-              //if (pow(m, 2) + pow(n, 2) < pow(radius / 6, 2))
+              // if (pow(m, 2) + pow(n, 2) < pow(radius / 6, 2))
               //{
-                output[i + m][j + n] = 255;
+              output[(i + m) * height + (j + n)] = 255;
               //}
             }
           }
