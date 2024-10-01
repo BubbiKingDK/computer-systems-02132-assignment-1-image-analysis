@@ -59,6 +59,7 @@ void image_processing()
     create_kernel(kernel_ptr, KERNEL_SIZE, MAX_VALUE, MIN_VALUE);
 
     convolution(kernel_ptr, KERNEL_SIZE, modified_ptr, BMP_WIDTH, BMP_HEIGTH, analysis_ptr);
+
     /* convertTo3D(analysis_image, input_image);
     write_bitmap(input_image, "convulted_image1.bmp");
     convertTo3D(modified_image, input_image);
@@ -66,8 +67,8 @@ void image_processing()
     
     // convertToUnsignedChar(analysis_image, modified_image);
 
-    analysis_loop(analysis_image, modified_image);
     //analysis_loop(modified_image, analysis_image);
+    analysis_loop(analysis_image, modified_image);
 }
 
 void testing(char *filepath)
@@ -123,7 +124,7 @@ void run(int argc, char **argv, int isTesting)
 
     printf("Cells found: %d\n", coordinates_count);
 
-    printMemoryUsage();
+    //printMemoryUsage();
 
     end = clock();
     double time_spent = (double)(end - start) / CLOCKS_PER_SEC;
