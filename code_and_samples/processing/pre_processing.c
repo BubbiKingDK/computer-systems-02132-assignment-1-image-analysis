@@ -18,16 +18,6 @@ void grey_scale(unsigned char *input_ptr, int width, int height, int channels, u
     }
   }
 }
-/* void grey_scale(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char grey_scale_image[BMP_WIDTH][BMP_HEIGTH])
-{
-  for (int x = 0; x < BMP_WIDTH; x++)
-  {
-    for (int y = 0; y < BMP_HEIGTH; y++)
-    {
-      grey_scale_image[x][y] = (input_image[x][y][0] + input_image[x][y][1] + input_image[x][y][2]) / 3;
-    }
-  }
-} */
 
 /* #define MAX_INTENSITY 256
 

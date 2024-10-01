@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h> 
 
-
 // Farvekoder
 #define RESET   "\x1B[0m"
 #define RED     "\x1B[31m"
@@ -14,7 +13,6 @@ typedef struct {
     char failed_test[10][256];
     char failure_message[10][256];
 } TestBlueprint;
-
 
 void print_progress_bar(int current, int total, int passed, int failed) {
     int bar_width = 50;
@@ -54,7 +52,6 @@ void run_test(TestBlueprint *blueprint, const char *test_name, int (*test_func)(
     print_progress_bar(blueprint->test_run, total, blueprint->test_passed, blueprint->test_failed);
     Sleep(200);
 }
-
 
 void print_test_results(TestBlueprint blueprint) {
     double percentage_passed = ((double)blueprint.test_passed / blueprint.test_run) * 100;

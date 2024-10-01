@@ -10,7 +10,7 @@ void addCoordinate(int x, int y)
   if (coordinates_count >= MAX_COORDINATES)
   {
     fprintf(stderr, "Cannot add more coordinates: limit reached!\n");
-    return; // Stop, hvis vi overskrider grænsen
+    return; 
   }
 
   coordinates[coordinates_count].x = x;
@@ -40,7 +40,6 @@ void find_cell(unsigned char *current_ptr, int width, int height, int centerX, i
   }
 
   addCoordinate(centerX, centerY);
-  //printf("(%d, %d)", centerX, centerY);
 
   for (int i = -radius; i <= radius; i++)
   {
@@ -66,7 +65,4 @@ void count_cells(unsigned char *current_ptr, int width, int height)
       find_cell(current_ptr, width, height, i, j);
     }
   }
-  /* unsigned char *temp = current_ptr;
-  current_ptr = next_ptr;
-  next_ptr = temp; */
 }

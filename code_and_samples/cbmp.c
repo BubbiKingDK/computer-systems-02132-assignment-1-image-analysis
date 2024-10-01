@@ -171,7 +171,7 @@ BMP* bopen(char* file_path)
     {
         //_throw_error("Invalid file depth");
 
-        fprintf(stderr, "Error: Invalid file depth \n");
+        //fprintf(stderr, "Error: Invalid file depth \n");
         free(bmp->file_byte_contents); 
         free(bmp);
         read_correct = 0;

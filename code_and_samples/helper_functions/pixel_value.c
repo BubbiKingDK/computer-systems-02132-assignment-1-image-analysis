@@ -3,7 +3,6 @@
 #include "../cbmp.h"
 #include "pixel_value.h"
 
-
 unsigned char getPixelValue(unsigned char *image_ptr,int width,int height, int x, int y)
 {
   if (x >= 0 && x < width && y >= 0 && y < height)
