@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include <psapi.h>
-#include "../processing/image_processing.c"
+#include "../src/processing/image_processing.c"
 
 #define TOTAL_CELLS 300
 

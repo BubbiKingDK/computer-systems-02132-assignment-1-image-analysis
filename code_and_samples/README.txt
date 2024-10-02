@@ -1,13 +1,13 @@
 For integration test:
-    - gcc cbmp.c test/integration_test.c -o test/integration_test.exe -std=c99 -lpsapi -O3
-    - ./test/integration_test.exe
+    - gcc src/cbmp.c test/integration_test.c -o integration_test.exe -std=c99 -lpsapi -O3
+    - ./integration_test.exe
 
 For unit test_
-    -  gcc test/unit_test.c -o test/unit_test.exe -std=c99 -lpsapi -O3
-    - ./test/unit_test.exe
+    -  gcc test/unit_test.c -o unit_test.exe -std=c99 -lpsapi -O3
+    - ./unit_test.exe
 
 For main:
-    - gcc cbmp.c main.c -o main.exe -std=c99 -lpsapi -O3
+    - gcc src/cbmp.c src/main.c -o main.exe -std=c99 -lpsapi -O3
     - ./main.exe samples/easy/1EASY.bmp example_inv.bmp
 
 This folder contains code and material for the Assignment 1.

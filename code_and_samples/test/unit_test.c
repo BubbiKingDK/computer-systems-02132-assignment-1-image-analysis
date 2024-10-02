@@ -5,14 +5,14 @@
 #include <windows.h>
 #include <psapi.h>
 #include <time.h>
-#include "../processing/pre_processing.c"
-#include "../algorithms/convolution.c"
-#include "../algorithms/erosion.c"
-#include "../helper_functions/convert_array.c"
-#include "../helper_functions/pixel_value.c"
-#include "../helper_functions/kernel.c"
-#include "../algorithms/detect_cells.c"
-#include "../algorithms/detect_cells.h"
+#include "../src/processing/pre_processing.c"
+#include "../src/algorithms/convolution.c"
+#include "../src/algorithms/erosion.c"
+#include "../src/helper_functions/convert_array.c"
+#include "../src/helper_functions/pixel_value.c"
+#include "../src/helper_functions/kernel.c"
+#include "../src/algorithms/detect_cells.c"
+#include "../src/algorithms/detect_cells.h"
 #include "unit_test_styling.c"
 
 #define WIDTH 950
