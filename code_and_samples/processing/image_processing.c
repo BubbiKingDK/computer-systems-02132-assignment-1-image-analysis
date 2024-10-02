@@ -7,7 +7,7 @@
 #include <psapi.h>
 #include <time.h>
 #include "pre_processing.c"
-#include "../algorithms/modified_convolution.c"
+#include "../algorithms/convolution.c"
 #include "../helper_functions/kernel.c"
 #include "../algorithms/erosion.c"
 #include "../algorithms/detect_cells.h"
