@@ -7,7 +7,7 @@
 #include <psapi.h>
 #include <time.h>
 #include "pre_processing.c"
-#include "../algorithms/convolution.c"
+#include "../algorithms/modified_convolution.c"
 #include "../helper_functions/kernel.c"
 #include "../algorithms/erosion.c"
 #include "../algorithms/detect_cells.h"
@@ -57,7 +57,7 @@ void image_processing()
     create_kernel(kernel_ptr, KERNEL_SIZE, MAX_VALUE, MIN_VALUE);
 
     // Perform convolution
-    convolution(kernel_ptr, KERNEL_SIZE, modified_ptr, BMP_WIDTH, BMP_HEIGTH, analysis_ptr);
+    modified_convolution(kernel_ptr, KERNEL_SIZE, modified_ptr, BMP_WIDTH, BMP_HEIGTH, analysis_ptr);
 
     // Analysis processing
     analysis_loop(analysis_image, modified_image);

@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "../helper_functions/pixel_value.h"
 
-void convolution(int *kernel, int kernel_size, unsigned char *input, int width, int height, unsigned char *output)
+void modified_convolution(int *kernel, int kernel_size, unsigned char *input, int width, int height, unsigned char *output)
 {
   unsigned char radius = kernel_size / 2;
   int kernel_sum = 0;

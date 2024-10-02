@@ -6,7 +6,7 @@
 #include <psapi.h>
 #include <time.h>
 #include "../src/processing/pre_processing.c"
-#include "../src/algorithms/convolution.c"
+#include "../src/algorithms/modified_convolution.c"
 #include "../src/algorithms/erosion.c"
 #include "../src/helper_functions/convert_array.c"
 #include "../src/helper_functions/pixel_value.c"
@@ -236,7 +236,7 @@ int testConvolution(char *failure_message)
 
     create_kernel(kernel_ptr, size, max, min);
 
-    convolution(kernel_ptr, size, image_ptr1, 5, 5, output_ptr1);
+    modified_convolution(kernel_ptr, size, image_ptr1, 5, 5, output_ptr1);
 
     for (int i = 0; i < 5; i++)
     {
@@ -250,7 +250,7 @@ int testConvolution(char *failure_message)
         }
     }
 
-    convolution(kernel_ptr, size, image_ptr2, 5, 5, output_ptr2);
+    modified_convolution(kernel_ptr, size, image_ptr2, 5, 5, output_ptr2);
 
     for (int i = 0; i < 5; i++)
     {
