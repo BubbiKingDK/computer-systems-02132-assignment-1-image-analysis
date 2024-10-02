@@ -42,7 +42,7 @@ int testGrayScale(char *failure_message)
     {
         for (int j = 0; j < 5; j++)
         {
-            if (grey_scale_ptr[i * 5 + j] != (100 + 150 + 200) / 3)
+            if (grey_scale_ptr[i * 5 + j] != (100 + 150 + 200) * 86 / 256)
             {
                 sprintf(failure_message, "Expected 150, but was %d", grey_scale_ptr[i * 5 + j]);
                 return 0;

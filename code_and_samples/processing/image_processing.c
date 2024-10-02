@@ -96,5 +96,5 @@ void run(int argc, char **argv, int isTesting)
 
     // Print analysis results
     printf("Cells found: %d\n", coordinates_count);
-    printMemoryUsage();
+    //printMemoryUsage();
 }

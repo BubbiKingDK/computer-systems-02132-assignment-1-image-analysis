@@ -14,7 +14,7 @@ void grey_scale(unsigned char *input_ptr, int width, int height, int channels, u
       unsigned char r = input_ptr[index];
       unsigned char g = input_ptr[index + 1];
       unsigned char b = input_ptr[index + 2];
-      grey_scale_ptr[x * height + y] = (r + g + b) / 3;
+      grey_scale_ptr[x * height + y] = ((r + g + b) * 86) >> 8;
     }
   }
 }
