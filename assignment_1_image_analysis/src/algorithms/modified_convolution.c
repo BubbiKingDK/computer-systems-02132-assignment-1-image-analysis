@@ -5,7 +5,7 @@
 
 void modified_convolution(int *kernel, int kernel_size, unsigned char *input, int width, int height, unsigned char *output)
 {
-  unsigned char radius = kernel_size / 2;
+  unsigned char radius = kernel_size >> 1;
   int kernel_sum = 0;
   double temp = 0.037;
 

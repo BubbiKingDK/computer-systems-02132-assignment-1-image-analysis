@@ -16,7 +16,7 @@ void run_test(const char *folder, const char **input_filenames, int file_count, 
     pic_count = file_count;
 
     printf("\n---------------------------\n");
-    printf("         %s Test         \n", folder);
+    printf("         %s test         \n", folder);
     printf("---------------------------\n");
     printf("%-10s %-10s %-10s\n", "Test", "Cells", "Time (s)");
     printf("---------------------------\n");
@@ -31,7 +31,7 @@ void run_test(const char *folder, const char **input_filenames, int file_count, 
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         start = clock();
-        run(argc, argv, 1);   
+        run(argc, argv, 1);
         draw_x(input_image); 
         char output_filepath[1024];
         snprintf(output_filepath, sizeof(output_filepath), "test/output/%s/%s%d.bmp", output_folder, folder, i + 1);
