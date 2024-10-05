@@ -1,7 +1,5 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <windows.h>
-#include <psapi.h>
 #include "../src/processing/image_processing.c"
 
 #define TOTAL_CELLS 300

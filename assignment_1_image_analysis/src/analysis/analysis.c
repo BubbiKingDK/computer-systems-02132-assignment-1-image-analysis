@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "../cbmp.h"
+#include "../algorithms/detect_cells.h"
+#include "../algorithms/erosion.c"
 
 void analysis_loop(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned char output_image[BMP_WIDTH][BMP_HEIGTH])
 {
@@ -21,8 +23,9 @@ void analysis_loop(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned ch
       break;
     }
     
-    // Swap current and next pointers for the next erosion step
     count_cells(next_ptr, BMP_WIDTH, BMP_HEIGTH);
+
+    // Swap current and next pointers for the next erosion step
     unsigned char *temp = current_ptr;
     current_ptr = next_ptr;
     next_ptr = temp;

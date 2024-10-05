@@ -8,7 +8,6 @@
 #include "../src/processing/pre_processing.c"
 #include "../src/algorithms/modified_convolution.c"
 #include "../src/algorithms/erosion.c"
-#include "../src/helper_functions/convert_array.c"
 #include "../src/helper_functions/pixel_value.c"
 #include "../src/helper_functions/kernel.c"
 #include "../src/algorithms/detect_cells.c"
@@ -268,9 +267,9 @@ int testConvolution(char *failure_message)
 
 int main()
 {
-    TestBlueprint blueprint = {0, 0, 0, {""}, {""}}; // Initialize testsuite
+    TestBlueprint blueprint = {0, 0, 0, {""}, {""}}; // Initialize test blueprint
 
-    int total_tests = 5; // Amount of testss
+    int total_tests = 5; // Amount of tests
 
     char failure_message[256];
 

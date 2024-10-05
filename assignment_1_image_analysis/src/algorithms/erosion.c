@@ -1,3 +1,5 @@
+// This file contains method for erosion
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -17,11 +19,11 @@ int erode_image(unsigned char *current_ptr, int width, int height, unsigned char
         next_ptr[x * height + y] = 0;
         continue;
       }
-      // Cheking surounding pixels in a + (plus) pattern
-      if (current_ptr[(x - 1) * height + y] && // Top
-          current_ptr[(x + 1) * height + y] && // Buttom
-          current_ptr[x * height + (y - 1)] && // Left
-          current_ptr[x * height + (y + 1)])   // Right
+      // Checking surrounding pixels in a plus-pattern
+      if (current_ptr[(x - 1) * height + y] &&
+          current_ptr[(x + 1) * height + y] &&
+          current_ptr[x * height + (y - 1)] &&
+          current_ptr[x * height + (y + 1)])
       {
         next_ptr[x * height + y] = 255;
       }

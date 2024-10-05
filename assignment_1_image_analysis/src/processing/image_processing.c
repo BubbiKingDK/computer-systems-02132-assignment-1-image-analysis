@@ -1,17 +1,14 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "../cbmp.h"
 #include <limits.h>
 #include <math.h>
-#include <windows.h>
-#include <psapi.h>
 #include <time.h>
 #include "pre_processing.c"
 #include "../algorithms/modified_convolution.c"
 #include "../helper_functions/kernel.c"
-#include "../algorithms/erosion.c"
 #include "../algorithms/detect_cells.h"
-#include "../helper_functions/convert_array.c"
 #include "post_processing.c"
 #include "../helper_functions/pixel_value.h"
 #include "../helper_functions/pixel_value.c"
@@ -44,7 +41,7 @@ void image_processing()
     int *kernel_ptr = &kernel[0][0];
     create_kernel(kernel_ptr, KERNEL_SIZE, MAX_VALUE, MIN_VALUE);
 
-    // Perform convolution
+    // Perform modified convolution
     modified_convolution(kernel_ptr, KERNEL_SIZE, modified_ptr, BMP_WIDTH, BMP_HEIGTH, analysis_ptr);
 
     // Analysis processing

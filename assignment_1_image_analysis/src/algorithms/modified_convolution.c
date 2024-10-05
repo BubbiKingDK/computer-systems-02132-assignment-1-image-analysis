@@ -44,6 +44,7 @@ void modified_convolution(int *kernel, int kernel_size, unsigned char *input, in
         }
       }
 
+      // Normalize the sum with the kernel_sum
       if (kernel_sum != 0)
       {
         sum /= abs(kernel_sum);
@@ -51,12 +52,13 @@ void modified_convolution(int *kernel, int kernel_size, unsigned char *input, in
 
       int threshold = (int)(kernel_sum * temp);
 
+      // If pixel is near border the threshold is reduced
       if ((i < 4 && i >= 0) || (i < width - 1 && i >= height - 5) || (j < 4 && j >= 0) || (j < height - 1 && j >= width - 5))
       {
         double temp = 0.7;
         threshold = (int)(threshold * temp);
       }
-
+      
       if (sum >= threshold)
       {
         for (int m = -1; m <= 1; m++)

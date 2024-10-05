@@ -1,3 +1,5 @@
+// File for drawing the image over the found cells
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "../cbmp.h"
@@ -99,7 +101,7 @@ void draw_x(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS])
           int y = cy + (y_offset - ARRAY_HEIGHT / 2);
 
           if (x >= 0 && x < BMP_WIDTH && y >= 0 && y < BMP_HEIGTH)
-          { 
+          {
             // Change the colors
             switch (draw_array[y_offset][x_offset])
             {

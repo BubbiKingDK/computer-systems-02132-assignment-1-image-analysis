@@ -1,8 +1,9 @@
+// This file contains method for cell detection
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "../cbmp.h"
 #include "../helper_functions/pixel_value.h"
-
 #include "detect_cells.h"
 
 void addCoordinate(int x, int y)
@@ -10,7 +11,7 @@ void addCoordinate(int x, int y)
   if (coordinates_count >= MAX_COORDINATES)
   {
     fprintf(stderr, "Cannot add more coordinates: limit reached!\n");
-    return; 
+    return;
   }
 
   coordinates[coordinates_count].x = x;
@@ -33,7 +34,11 @@ void find_cell(unsigned char *current_ptr, int width, int height, int centerX, i
   int radius = 6;
   for (int i = -radius; i <= radius; i++)
   {
-    if (getPixelValue(current_ptr, width, height, centerX - radius, centerY + i) || getPixelValue(current_ptr, width, height, centerX + radius, centerY + i) || getPixelValue(current_ptr, width, height, centerX + i, centerY - radius) || getPixelValue(current_ptr, width, height, centerX + i, centerY + radius))
+    // Checking if there is a white pixel in the border
+    if (getPixelValue(current_ptr, width, height, centerX - radius, centerY + i) ||
+        getPixelValue(current_ptr, width, height, centerX + radius, centerY + i) ||
+        getPixelValue(current_ptr, width, height, centerX + i, centerY - radius) ||
+        getPixelValue(current_ptr, width, height, centerX + i, centerY + radius))
     {
       return;
     }
