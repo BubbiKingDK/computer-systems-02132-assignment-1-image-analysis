@@ -11,6 +11,7 @@ void analysis_loop(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned ch
   int count = 0;
   int eroded = 1;
 
+  // Loop continuously as long as the image is being eroded
   while (eroded)
   {
     count++;
@@ -19,7 +20,8 @@ void analysis_loop(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH], unsigned ch
     {
       break;
     }
-
+    
+    // Swap current and next pointers for the next erosion step
     count_cells(next_ptr, BMP_WIDTH, BMP_HEIGTH);
     unsigned char *temp = current_ptr;
     current_ptr = next_ptr;

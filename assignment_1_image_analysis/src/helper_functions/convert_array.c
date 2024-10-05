@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "../cbmp.h"
 
+// Converts 2D image array, back to 3D array (Used for debugging)
 void convertTo3D(unsigned char image[BMP_WIDTH][BMP_HEIGTH], unsigned char invertedImage[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS])
 {
   for (int i = 0; i < BMP_WIDTH; i++)

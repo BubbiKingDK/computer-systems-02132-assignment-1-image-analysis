@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h> 
 
-// Farvekoder
+// Colors
 #define RESET   "\x1B[0m"
 #define RED     "\x1B[31m"
 #define GREEN   "\x1B[32m" 
@@ -41,14 +41,14 @@ void run_test(TestBlueprint *blueprint, const char *test_name, int (*test_func)(
     } else {
         blueprint->test_failed++;
 
-        // Gem navnet på den fejlede test
+        // Save the name of the failed test
         snprintf(blueprint->failed_test[blueprint->test_failed - 1], 256, "%s", test_name);
 
-        // Gem fejlmeddelelsen
+        // Save error message 
         snprintf(blueprint->failure_message[blueprint->test_failed - 1], 256, "%s", failure_message);
     }
 
-    // Opdater progress baren
+    // Update progressbar
     print_progress_bar(blueprint->test_run, total, blueprint->test_passed, blueprint->test_failed);
     Sleep(200);
 }
@@ -66,7 +66,7 @@ void print_test_results(TestBlueprint blueprint) {
     
     printf("Success rate: %.2f%%\n", percentage_passed);
 
-    // Hvis der er fejlede tests, udskriv deres navne og detaljer
+    // Output the failed test and error message
     if (blueprint.test_failed > 0) {
         printf(RED "\nFailed tests:\n" RESET);
         for (int i = 0; i < blueprint.test_failed; i++) {

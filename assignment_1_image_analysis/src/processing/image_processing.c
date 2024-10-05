@@ -28,18 +28,6 @@ unsigned char modified_image[BMP_WIDTH][BMP_HEIGTH];
 unsigned char analysis_image[BMP_WIDTH][BMP_HEIGTH] = {0};
 int kernel[KERNEL_SIZE][KERNEL_SIZE];
 
-void printMemoryUsage()
-{
-    PROCESS_MEMORY_COUNTERS pmc;
-    if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc)))
-    {
-        printf("Peak Page File Bytes: %.2f MB\n", pmc.PeakPagefileUsage / (1024.0 * 1024.0));
-        printf("Peak Working Set Bytes: %.2f MB\n", pmc.PeakWorkingSetSize / (1024.0 * 1024.0));
-        printf("Page File Bytes: %.2f MB\n", pmc.PagefileUsage / (1024.0 * 1024.0));
-        printf("Working Set Bytes: %.2f MB\n", pmc.WorkingSetSize / (1024.0 * 1024.0));
-    }
-}
-
 void image_processing()
 {
     unsigned char *input_ptr = &input_image[0][0][0];

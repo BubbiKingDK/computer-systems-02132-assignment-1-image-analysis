@@ -9,7 +9,7 @@ void modified_convolution(int *kernel, int kernel_size, unsigned char *input, in
   int kernel_sum = 0;
   double temp = 0.037;
 
-  // Beregn summen af kernelværdierne
+  // Calulates the sum of kernel values
   for (int i = 0; i < kernel_size; i++)
   {
     for (int j = 0; j < kernel_size; j++)
@@ -34,18 +34,16 @@ void modified_convolution(int *kernel, int kernel_size, unsigned char *input, in
 
       int sum = 0;
 
-      // Konvolutionsoperation
+      // Convolution operation
       for (int m = -radius; m <= radius; m++)
       {
         for (int n = -radius; n <= radius; n++)
         {
-          // Hent pixelværdi med grænsekontrol
           unsigned char pixelvalue = getPixelValue(input, width, height, i + m, j + n);
           sum += pixelvalue * kernel[(m + radius) * kernel_size + (n + radius)];
         }
       }
 
-      // Normaliser og begræns outputværdi
       if (kernel_sum != 0)
       {
         sum /= abs(kernel_sum);
@@ -61,12 +59,11 @@ void modified_convolution(int *kernel, int kernel_size, unsigned char *input, in
 
       if (sum >= threshold)
       {
-        // Behold det område, der matcher kernel
         for (int m = -1; m <= 1; m++)
         {
           for (int n = -1; n <= 1; n++)
           {
-            // Sørg for, at vi holder os inden for billedets grænser
+            // Keeping us within bound
             if (i + m >= 0 && i + m < width && j + n >= 0 && j + n < height)
             {
               output[(i + m) * height + (j + n)] = 255;

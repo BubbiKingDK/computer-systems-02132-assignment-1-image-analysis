@@ -268,13 +268,13 @@ int testConvolution(char *failure_message)
 
 int main()
 {
-    TestBlueprint blueprint = {0, 0, 0, {""}, {""}}; // Initialiser testsuite
+    TestBlueprint blueprint = {0, 0, 0, {""}, {""}}; // Initialize testsuite
 
-    int total_tests = 5; // Angiv antal tests
+    int total_tests = 5; // Amount of testss
 
-    char failure_message[256]; // Buffer til fejlmeddelelse
+    char failure_message[256];
 
-    // Kør tests
+    // Run tests
     printf("\n");
     run_test(&blueprint, "Grey Scale Test", testGrayScale, failure_message, total_tests);
     run_test(&blueprint, "Binary Treshold Test", testBlackAndWhite, failure_message, total_tests);
@@ -282,7 +282,6 @@ int main()
     run_test(&blueprint, "Find Cell Test", testFindCell, failure_message, total_tests);
     run_test(&blueprint, "Convolution Test", testConvolution, failure_message, total_tests);
 
-    // Udskriv afsluttende progress bar
     print_progress_bar(total_tests, blueprint.test_passed + blueprint.test_failed, blueprint.test_passed, blueprint.test_failed);
 
     if (blueprint.test_failed == 0)

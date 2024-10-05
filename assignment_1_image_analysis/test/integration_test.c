@@ -8,6 +8,7 @@
 
 extern int read_correct;
 
+// Terminal output template
 void run_test(const char *folder, const char **input_filenames, int file_count, const char *output_folder)
 {
     clock_t start, end;

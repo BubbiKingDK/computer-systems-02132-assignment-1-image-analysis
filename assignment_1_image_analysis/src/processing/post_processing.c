@@ -23,6 +23,7 @@ Color Glod_color = {230, 77, 34};
 Color Ash_color = {150, 147, 147};
 Color Mcd_color = {255, 204, 0};
 
+// Image we draw over the found cells
 int draw_array[ARRAY_HEIGHT][ARRAY_WIDTH] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -98,7 +99,8 @@ void draw_x(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS])
           int y = cy + (y_offset - ARRAY_HEIGHT / 2);
 
           if (x >= 0 && x < BMP_WIDTH && y >= 0 && y < BMP_HEIGTH)
-          {
+          { 
+            // Change the colors
             switch (draw_array[y_offset][x_offset])
             {
             case 0:

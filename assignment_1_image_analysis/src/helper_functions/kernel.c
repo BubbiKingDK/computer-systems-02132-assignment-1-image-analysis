@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+//creats the kernel used for convolution
 void create_kernel(int *kernel_ptr, int kernel_size, int max_value, int min_value)
 {
   int radius = kernel_size / 2;
